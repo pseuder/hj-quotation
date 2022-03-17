@@ -21,4 +21,16 @@ class Migration(migrations.Migration):
                 'db_table': 'User',
             },
         ),
+        migrations.CreateModel(
+            name='Product',
+            fields=[
+                ('brand', models.TextField(blank=True)),
+                ('category', models.TextField(blank=True)),
+                ('name', models.TextField(blank=True)),
+                ('unitPrice', models.TextField(blank=True)),
+            ],
+            options={
+                'db_table': 'Product',
+            },
+        ),
     ]
