@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
+                ('id', models.IntegerField(blank=True, db_column='id', primary_key=True, serialize=False, unique=True)),
                 ('account', models.TextField(blank=True)),
                 ('password', models.TextField(blank=True)),
             ],
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Product',
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('id', models.IntegerField(blank=True, db_column='id', primary_key=True, serialize=False, unique=True)),
                 ('brand', models.TextField(blank=True)),
                 ('category', models.TextField(blank=True)),
                 ('name', models.TextField(blank=True)),
