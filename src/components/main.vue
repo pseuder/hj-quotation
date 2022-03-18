@@ -50,7 +50,7 @@
 </style>
 
 <template>
-<div style="width: 80%; margin: auto auto">
+<div style="width: 90%; margin: auto auto">
     <el-tabs type="border-card" v-model="tabsValue">
         <el-tab-pane label="基本資料" name="basic">
             <div class="tab-body">
