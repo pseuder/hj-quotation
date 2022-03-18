@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Product',
             fields=[
+                ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('brand', models.TextField(blank=True)),
                 ('category', models.TextField(blank=True)),
                 ('name', models.TextField(blank=True)),

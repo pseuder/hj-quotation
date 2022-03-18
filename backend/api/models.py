@@ -11,7 +11,7 @@ class User(models.Model):
         return self.account
 
 class Product(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, serialize=False)
     brand = models.TextField(blank=True, null=False)
     category = models.TextField(blank=True, null=False)
     name = models.TextField(blank=True, null=False)
