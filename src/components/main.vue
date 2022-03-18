@@ -224,11 +224,11 @@
                             </tr>
                         </table>
                         <div style="" class="toLeft toFlex basic-info">
-                            <div style="line-height: 150px; width: 400px;">和進電器水電行:</div>
-                            <div style="line-height: 150px;" class="toFlex">
+                            <div style="line-height: 145px; width: 400px;">和進電器水電行:</div>
+                            <div style="line-height: 145px;" class="toFlex">
                                 <div>客戶簽名:</div>
-                                <div v-if="clientSignImg==''" style="width: 275px; height: 80px;"  @click="signCanvasVisible=true" />
-                                <img v-else :src=clientSignImg style="width: 275px; height: 80px;" @click="signCanvasVisible=true" />
+                                <div v-if="clientSignImg==''" style="width: 275px; height: 100%;"  @click="signCanvasVisible=true" />
+                                <img v-else :src=clientSignImg style="width: 275px; height: 100%;" @click="signCanvasVisible=true" />
                             </div>
                         </div>
                     </div>
