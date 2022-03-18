@@ -23,3 +23,76 @@ def getProduct(request):
         products = Product.objects.all()
         products = [{'id': product.id, 'brand': product.brand, 'category': product.category, 'name': product.name, 'unitPrice': product.unitPrice} for product in products]
         return HttpResponse(json.dumps(products))
+
+@csrf_exempt
+def getDatabaseTable(request):
+    '''回傳資料庫資料表'''
+    if request.method == 'GET':
+        tables = [{'name': table.name, 'description': table.description} for table in User._meta.get_all_tables_with_content()]
+        return HttpResponse(json.dumps(tables))
+
+@csrf_exempt
+def getUser(request):
+    '''回傳使用者資料'''
+    if request.method == 'GET':
+        users = User.objects.all()
+        users = [{'id': user.id, 'account': user.account, 'password': user.password} for user in users]
+        return HttpResponse(json.dumps(users))
+
+@csrf_exempt
+def editUser(request):
+    '''編輯使用者資料'''
+    if request.method == 'POST':
+        edituserData = json.loads(request.body)['edituserData']
+        user = User.objects.get(id=edituserData['id'])
+        user.account = edituserData['account']
+        user.password = edituserData['password']
+        user.save()
+        return HttpResponse('success')
+
+@csrf_exempt
+def deleteUser(request):
+    '''刪除使用者資料'''
+    if request.method == 'POST':
+        id = json.loads(request.body)['id']
+        User.objects.get(id=id).delete()
+        return HttpResponse('success')
+
+@csrf_exempt
+def editProduct(request):
+    '''編輯商品資料'''
+    if request.method == 'POST':
+        editproductData = json.loads(request.body)['editproductData']
+        product = Product.objects.get(id=editproductData['id'])
+        product.brand = editproductData['brand']
+        product.category = editproductData['category']
+        product.name = editproductData['name']
+        product.unitPrice = editproductData['unitPrice']
+        product.save()
+        return HttpResponse('success')
+
+@csrf_exempt
+def deleteProduct(request):
+    '''刪除商品資料'''
+    if request.method == 'POST':
+        id = json.loads(request.body)['id']
+        Product.objects.get(id=id).delete()
+        return HttpResponse('success')
+
+@csrf_exempt
+def addUser(request):
+    '''新增使用者資料'''
+    if request.method == 'POST':
+        adduserData = json.loads(request.body)['adduserData']
+        User.objects.create(account=adduserData['account'], password=adduserData['password'])
+        newUserID = User.objects.get(account=adduserData['account'], password=adduserData['password']).id
+        return HttpResponse(newUserID)
+
+@csrf_exempt
+def addProduct(request):
+    '''新增商品資料'''
+    if request.method == 'POST':
+        addproductData = json.loads(request.body)['addproductData']
+        Product.objects.create(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
+        newProductID = Product.objects.get(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice']).id
+        return HttpResponse(newProductID)
