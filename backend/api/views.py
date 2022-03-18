@@ -1,15 +1,10 @@
 from django.shortcuts import render
-from .models import User
-# Create your views here.
 from django.http import HttpResponse
-import json
-import sys
-sys.path.append("..")#為了呼叫上級py檔案函式
-# 解决前端post请求 csrf问题
 from django.views.decorators.csrf import csrf_exempt
+from .models import User, Product
+import json, sys
+sys.path.append("..")
 
-
-#-------------------login------------------------#
 @csrf_exempt
 def login(request):
     '''登入資料核對及回傳資料'''
@@ -20,3 +15,11 @@ def login(request):
             return HttpResponse('success')
         else: 
             return HttpResponse('fail')
+
+@csrf_exempt
+def getProduct(request):
+    '''回傳商品資料'''
+    if request.method == 'GET':
+        products = Product.objects.all()
+        products = [{'id': product.id, 'brand': product.brand, 'category': product.category, 'name': product.name, 'unitPrice': product.unitPrice} for product in products]
+        return HttpResponse(json.dumps(products))

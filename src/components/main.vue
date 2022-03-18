@@ -35,7 +35,7 @@
     font-weight: 600;
 }
 .table-td{
-    height: 50px; 
+    height: 45px; 
     word-wrap: break-word;
 }
 .table{
@@ -66,7 +66,7 @@
                         <el-input v-model="companyForm.telephone"></el-input>
                     </el-form-item>
                     <el-form-item label="店家傳真">
-                        <el-input v-model="companyForm.tax"></el-input>
+                        <el-input v-model="companyForm.fax"></el-input>
                     </el-form-item>
 
                     
@@ -81,11 +81,22 @@
                         <el-input v-model="clientForm.telephone"></el-input>
                     </el-form-item>
                     <el-form-item label="客戶傳真">
-                        <el-input v-model="clientForm.tax"></el-input>
+                        <el-input v-model="clientForm.fax"></el-input>
                     </el-form-item>
                     <el-form-item label="客戶信箱">
                         <el-input v-model="clientForm.email"></el-input>
                     </el-form-item>
+                    <el-form-item label="日期">
+                        <div style="width:100%; text-align: left;">
+                            <el-date-picker
+                                v-model="clientForm.date"
+                                align="right"
+                                type="date"
+                                placeholder="選擇日期"
+                                :picker-options="pickerOptions" />
+                        <div>
+                    </el-form-item>
+                    
                 </el-form>
             </div>
             <div style="" class="tab-footer">
@@ -95,14 +106,19 @@
         <el-tab-pane label="服務項目" name="service">
             <div class="tab-body">
                 <el-table :data="serviceTable" empty-text="尚無資料">
-                    <el-table-column label="空調設備規格" prop="specification"></el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteService(scope.$index, scope.row)"></el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="規格" prop="specification"></el-table-column>
                     <el-table-column label="數量" prop="number"></el-table-column>
                     <el-table-column label="單位" prop="unit"></el-table-column>
                     <el-table-column label="單價" prop="unitPrice"></el-table-column>
                     <el-table-column label="金額" prop="price"></el-table-column>
                     <el-table-column label="備註" prop="remark"></el-table-column>
                 </el-table>
-                <el-button type="warning" icon="el-icon-plus" circle @click="dialogFormVisible=true"></el-button>
+                <el-button type="warning" icon="el-icon-plus" circle @click="openSpecificationDialog"></el-button>
             </div>
             <div class="tab-footer">
                 <el-button type="primary" @click="changeTab('basic')" plain>上一步</el-button>
@@ -143,23 +159,23 @@
                     <div style="height: 1070px; width: 750px; border: black double 6px; margin: 20px 20px;">
                         <div style="" class="basic-info">
                             <div style="text-align:center; font-size: 35px;">報   價   單</div>
-                            <div style="" class="toLeft">和進電器水電行</div>
-                            <div style="" class="toLeft">新竹縣新豐鄉建興路一段154-8號</div>
+                            <div style="" class="toLeft">{{companyForm.name}}</div>
+                            <div style="" class="toLeft">{{companyForm.address}}</div>
                             <div style="" class="toFlex">
-                                <div style="">TEL：03-5576567</div>
-                                <div style="margin-left:20px">FAX：03-573526</div>
+                                <div style="">TEL：{{companyForm.telephone}}</div>
+                                <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
                             </div>
                             <br>
                             <div style="" class="toFlex">
-                                <div style="width:60%" class="toLeft">客戶名稱：馬先生</div>
-                                <div style="" class="toLeft">日期：111/2/21</div>
+                                <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
+                                <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
                             </div>
                             <div style="" class="toFlex">
-                                <div style="width:60%" class="toLeft">聯絡電話：0978-815281</div>
-                                <div style="" class="toLeft">傳真：</div>
+                                <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
+                                <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
                             </div>
-                            <div style="" class="toLeft">地址：新竹縣新豐鄉建興路一段154-8號</div>
-                            <div style="" class="toLeft">Email：</div>
+                            <div style="" class="toLeft">地址：{{clientForm.address}}</div>
+                            <div style="" class="toLeft">Email：{{clientForm.email}}</div>
                         </div>
                         <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; letter-spacing: 32px; text-align: center;" class="basic-info">
                             國際分離式變頻空調工程
@@ -173,19 +189,19 @@
                                 <th width="100px">金額</th>
                                 <th width="120px">備註</th>
                             </tr>
-                            <tr v-for="item in testarr" :key="item">
-                                <td style="max-width: 365px; text-align:left;" class="table-td">{{item.name}}</td>
-                                <td style="max-width: 40px; text-align:center;" class="table-td">{{item.address}}</td>
-                                <td style="max-width: 40px; text-align:center;" class="table-td">{{item.telephone}}</td>
+                            <tr v-for="item in serviceTable" :key="item">
+                                <td style="max-width: 365px; text-align:left;" class="table-td">{{item.specification}}</td>
+                                <td style="max-width: 40px; text-align:center;" class="table-td">{{item.number}}</td>
+                                <td style="max-width: 40px; text-align:center;" class="table-td">{{item.unit}}</td>
                                 <td style="max-width: 100px; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.tax}}</div>
+                                    <div style="margin-right: 4px;">${{item.unitPrice}}</div>
                                 </td>
                                 <td style="max-width: 100px; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.email}}</div>
+                                    <div style="margin-right: 4px;">${{item.price}}</div>
                                 </td>
-                                <td style="max-width: 165px; text-align:center;" class="table-td">${{item.note}}</td>
+                                <td style="max-width: 165px; text-align:center;" class="table-td">{{item.remark}}</td>
                             </tr>
-                            <tr v-for="item of 10-testarr.length" :key="item">
+                            <tr v-for="item of 10-serviceTable.length" :key="item">
                                 <td v-for="item of 6" :key="item" class="table-td"></td>
                             </tr>
                             <tr>
@@ -207,9 +223,9 @@
                                 <td colspan="5" style="text-align:center" class="table-td">$112345</td>
                             </tr>
                         </table>
-                        <div style="height: 90px;" class="toLeft toFlex basic-info">
-                            <div style="width: 400px; line-height: 90px; ">和進電器水電行:</div>
-                            <div style="line-height: 90px;" class="toFlex">
+                        <div style="" class="toLeft toFlex basic-info">
+                            <div style="line-height: 150px; width: 400px;">和進電器水電行:</div>
+                            <div style="line-height: 150px;" class="toFlex">
                                 <div>客戶簽名:</div>
                                 <div v-if="clientSignImg==''" style="width: 275px; height: 80px;"  @click="signCanvasVisible=true" />
                                 <img v-else :src=clientSignImg style="width: 275px; height: 80px;" @click="signCanvasVisible=true" />
@@ -226,11 +242,11 @@
         </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="選擇空調設備規格" :visible.sync="dialogFormVisible">
-        <div>
-            <el-form :model="addSpecificationForm" label-width="80px">
+    <el-dialog title="選擇空調設備規格" :visible.sync="specificationDialogVisible" :close-on-click-modal="false">
+        <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
+            <el-form :model="addSpecificationForm" >
                 <el-form-item label="品牌">
-                    <el-select v-model="addSpecificationValue.brand" placeholder="選擇品牌">
+                    <el-select v-model="addSpecificationValue.brand" placeholder="選擇品牌" style="width:100%" @change="selectChange('brand')">
                         <el-option
                             v-for="item in addSpecificationOption.brand"
                             :key="item"
@@ -240,7 +256,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="種類">
-                    <el-select v-model="addSpecificationValue.category" placeholder="選擇種類">
+                    <el-select v-model="addSpecificationValue.category" placeholder="選擇種類" style="width:100%" @change="selectChange('category')" name="categorySelect">
                         <el-option
                             v-for="item in addSpecificationOption.category"
                             :key="item"
@@ -250,9 +266,9 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="商品">
-                    <el-select v-model="addSpecificationValue.product" placeholder="選擇商品">
+                    <el-select v-model="addSpecificationValue.name" placeholder="選擇商品" style="width:100%" name="nameSelect" @change="selectChange('name')">
                         <el-option
-                            v-for="item in addSpecificationOption.product"
+                            v-for="item in addSpecificationOption.name"
                             :key="item"
                             :label="item"
                             :value="item">
@@ -260,21 +276,22 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="數量">
-                    <el-input v-model="addSpecificationValue.number" placeholder=""></el-input>
+                    <el-input v-model="addSpecificationValue.number" placeholder="輸入數量"></el-input>
                 </el-form-item>
                 <el-form-item label="單位">
-                    <el-input v-model="addSpecificationValue.unit" placeholder=""></el-input>
+                    <el-input v-model="addSpecificationValue.unit" placeholder="輸入單位"></el-input>
                 </el-form-item>
                 <el-form-item label="單價">
-                    <el-input v-model="addSpecificationValue.unitPrice" placeholder=""></el-input>
+                    <el-input v-model="addSpecificationValue.unitPrice" placeholder="輸入單價"></el-input>
                 </el-form-item>
                 <el-form-item label="備註">
-                    <el-input v-model="addSpecificationValue.remark" placeholder=""></el-input>
+                    <el-input v-model="addSpecificationValue.remark" placeholder="輸入備註"></el-input>
                 </el-form-item>
             </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="warning" plain @click="openSpecificationDialog">清空</el-button>
+            <el-button type="primary" plain @click="specificationDialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="addService">確 定</el-button>
         </span>
     </el-dialog>
@@ -318,49 +335,33 @@ export default {
                 name:'和進電器水電行',
                 address:'新竹縣新豐鄉建興路一段154-8號',
                 telephone:'03-5576567',
-                tax:'03-573526',
+                fax:'03-573526',
             },
             clientForm:{
-                company:'',
+                name:'',
                 address:'',
                 telephone:'',
-                tax:'',
+                fax:'',
                 email:'',
+                date:'',
             },
             serviceTable:[],
-            dialogFormVisible: false,
+            specificationDialogVisible: false,
             addSpecificationOption:{
-                brand:['國際','日立'],
-                category:['變頻冷專冷氣', '變頻冷專冷暖'],
-                product:['CS-LJ71BA2/CU-LJ71BCA2', 'RA-25HV1'],
+                brand:[],
+                category:[],
+                name:[],
             },
             addSpecificationValue:{
-                brand:'國際',
-                category:'變頻冷專冷氣',
-                product:' CS-LJ71BA2/CU-LJ71BCA2',
-                number:'',
+                brand:'',
+                category:'',
+                name:'',
+                number:'1',
                 unit:'',
                 unitPrice:'',
                 remark:'',
             },
-            testarr:[
-                {
-                    name:'國際變頻冷專冷氣CS-LJ71BA2/CU-LJ71BCA2',
-                    address:'1',
-                    telephone:'組',
-                    tax:'56000',
-                    email:'56000',
-                    note:'test1test1',
-                },
-                {
-                    name:'日立變頻冷專冷暖RA-25HV1',
-                    address:'1',
-                    telephone:'米',
-                    tax:'31000',
-                    email:'31000',
-                    note:'test2test2',
-                },
-            ],
+            allProduct:[],
             clientSignImg: '',
             signCanvasVisible: false,
 
@@ -376,26 +377,34 @@ export default {
             self.$router.push({name: 'login'});
         }, 3000);
     }
+    else{
+        let self = this
+        this.axios.get('getProduct')
+        .then((response)=>{
+            self.allProduct = response.data;
+            let brandSet = new Set();
+            self.allProduct.forEach(function(item){
+                brandSet.add(item.brand)
+            })
+            self.addSpecificationOption.brand = [...brandSet];
+        })
+        this.clientForm.date = new Date();
+    }
   },
   computed: {
     htmlToPdfOptions() {
       return {
         margin: 0,
-
         filename: "我是pdf.pdf",
-
         image: {
           type: "jpeg",
           quality: 0.98,
         },
-
         enableLinks: true,
-
         html2canvas: {
           scale: 2,
           useCORS: true,
         },
-
         jsPDF: {
           unit: "in",
           format: 'a4',
@@ -406,18 +415,67 @@ export default {
   },
   methods:{
     changeTab(destination){
-    this.tabsValue = destination
+        this.tabsValue = destination
+    },
+    deleteService(index, row){
+        this.serviceTable.splice(index, 1)
+    },
+    selectChange(source){
+        if(source == 'brand'){
+            let self = this;
+            let categorySet = new Set();
+            self.allProduct.forEach(function(item){
+                if(item.brand == self.addSpecificationValue.brand){
+                    categorySet.add(item.category)
+                }
+            })
+            self.addSpecificationOption.category = [...categorySet];
+            
+            document.getElementsByName('categorySelect')[0].click()
+        }
+        else if(source == 'category'){
+            let self = this;
+            let productSet = new Set();
+            self.allProduct.forEach(function(item){
+                if(item.brand == self.addSpecificationValue.brand && item.category == self.addSpecificationValue.category){
+                    productSet.add(item.name)
+                }
+            })
+            self.addSpecificationOption.name = [...productSet];
+            document.getElementsByName('nameSelect')[0].click()
+        }
+        else if(source == 'name'){
+            let self = this;
+            let product = self.allProduct.find(function(item){
+                return item.brand == self.addSpecificationValue.brand && item.category == self.addSpecificationValue.category && item.name == self.addSpecificationValue.name;
+            })
+            self.addSpecificationValue.unitPrice = product.unitPrice;
+        }
+    },
+    openSpecificationDialog(){
+        this.addSpecificationValue.brand = '';
+        this.addSpecificationValue.category = '';
+        this.addSpecificationValue.name = '';
+        this.addSpecificationValue.number = '1';
+        this.addSpecificationValue.unit = '';
+        this.addSpecificationValue.unitPrice = '';
+        this.addSpecificationValue.remark = '';
+        this.addSpecificationOption.category = [];
+        this.addSpecificationOption.name = [];
+        this.specificationDialogVisible = true;
     },
     addService(){
-        let fullSpecification = this.addSpecificationValue.brand + this.addSpecificationValue.category + this.addSpecificationValue.product;
+        let fullSpecification = this.addSpecificationValue.brand + this.addSpecificationValue.category + this.addSpecificationValue.name;
+        let totalPrice = String(this.addSpecificationValue.number * this.addSpecificationValue.unitPrice.replaceAll(',', ''));
         this.serviceTable.push({
             specification: fullSpecification,
             number: this.addSpecificationValue.number,
             unit: this.addSpecificationValue.unit,
             unitPrice: this.addSpecificationValue.unitPrice,
-            price: this.addSpecificationValue.number * this.addSpecificationValue.unitPrice,
+            price: totalPrice,
             remark: this.addSpecificationValue.remark,
         })
+        this.specificationDialogVisible = false;
     },
     handleGenerate () {
         let self = this;
@@ -428,21 +486,18 @@ export default {
             self.$message({message: '沒有偵測到簽名!', type: 'error'})
         })
     },
-
-    show: function(){
+    show(){
       this.showLayout = !this.showLayout
     },
-    greet: function (event) {
-      // `this` inside methods points to the Vue instance
+    greet(event) {
       alert('Hello ' + this.name + '!')
-      // `event` is the native DOM event
-      if (event) {
+      if (event) 
         alert(event.target.tagName)
-      }
     },
     generateReport () {
       this.$refs.html2Pdf.generatePdf()
-    }
+    },
+    
   }
 }
 </script>
