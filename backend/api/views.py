@@ -112,8 +112,8 @@ def addUser(request):
     try:
         if request.method == 'POST':
             adduserData = json.loads(request.body)['adduserData']
-            User.objects.create(account=adduserData['account'], password=adduserData['password'])
-            newUserID = User.objects.get(account=adduserData['account'], password=adduserData['password']).id
+            newUserID = User.objects.latest('id').id + 1
+            User.objects.create(id=newUserID, account=adduserData['account'], password=adduserData['password'])
             return HttpResponse(newUserID)
     except Exception as e:
         return HttpResponse(e)
@@ -124,8 +124,8 @@ def addProduct(request):
     try:
         if request.method == 'POST':
             addproductData = json.loads(request.body)['addproductData']
-            Product.objects.create(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
-            newProductID = Product.objects.get(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice']).id
+            newProductID = Product.objects.latest('id').id + 1
+            Product.objects.create(id=newProductID, brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
             return HttpResponse(newProductID)
     except Exception as e:
         return HttpResponse(e)
@@ -137,8 +137,8 @@ def addOther(request):
     try:
         if request.method == 'POST':
             addotherData = json.loads(request.body)['addotherData']
-            Other.objects.create(name=addotherData['name'], unitPrice=addotherData['unitPrice'])
-            newOtherID = Other.objects.get(name=addotherData['name'], unitPrice=addotherData['unitPrice']).id
+            newOtherID = Other.objects.latest('id').id + 1
+            Other.objects.create(id=newOtherID, name=addotherData['name'], unitPrice=addotherData['unitPrice'])
             return HttpResponse(newOtherID)
     except Exception as e:
         return HttpResponse(e)
