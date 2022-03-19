@@ -2,7 +2,7 @@ from unicodedata import category
 from django.db import models
 
 class User(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, blank=True, null=False)
     account = models.TextField(blank=True, null=False)
     password = models.TextField(blank=True, null=False)
     class Meta:
@@ -12,7 +12,7 @@ class User(models.Model):
         return self.account
 
 class Product(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, blank=True, null=False)
     brand = models.TextField(blank=True, null=False)
     category = models.TextField(blank=True, null=False)
     name = models.TextField(blank=True, null=False)
@@ -24,7 +24,7 @@ class Product(models.Model):
         return self.id
 
 class Other(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, blank=True, null=False)
     name = models.TextField(blank=True, null=False)
     unitPrice = models.TextField(blank=True, null=False)
     class Meta:
