@@ -35,7 +35,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="帳號" name="account">
                     <div class="tab-body">
-                        <el-table :data="userData" style="width: 100%; height:93%; overflow: auto">
+                        <el-table :data="userData" style="width: 100%; height:93%; overflow: auto" v-loading="userTableLoading" empty-text="尚無資料">
                             <el-table-column label="帳號" prop="account">
                             </el-table-column>
                             <el-table-column label="密碼" prop="password">
@@ -52,7 +52,12 @@
                 </el-tab-pane>
                 <el-tab-pane label="商品" name="product">
                     <div class="tab-body">
-                        <el-table :data="productData" style="width: 100%; height:93%; overflow: auto" :default-sort = "{prop: 'date', order: 'descending'}">
+                        <el-table 
+                            :data="productData" 
+                            style="width: 100%; height:93%; overflow: auto" 
+                            :default-sort = "{prop: 'date', order: 'descending'}" 
+                            v-loading="productTableLoading"
+                            empty-text="尚無資料">
                             <el-table-column label="廠牌" prop="brand" sortable>
                             </el-table-column>
                             <el-table-column label="種類" prop="category" sortable>
@@ -73,7 +78,12 @@
                 </el-tab-pane>
                 <el-tab-pane label="其他" name="other">
                     <div class="tab-body">
-                        <el-table :data="otherData" style="width: 100%; height:93%; overflow: auto" :default-sort = "{prop: 'date', order: 'descending'}">
+                        <el-table 
+                            :data="otherData" 
+                            style="width: 100%; height:93%; overflow: auto" 
+                            :default-sort = "{prop: 'date', order: 'descending'}" 
+                            v-loading="otherTableLoading"
+                            empty-text="尚無資料">
                             <el-table-column label="名稱" prop="name" sortable>
                             </el-table-column>
                             <el-table-column label="單價" prop="unitPrice" sortable>
@@ -246,29 +256,41 @@ export default {
             name: '',
             unitPrice: '',
         },
+        userTableLoading: false,
+        productTableLoading: false,
+        otherTableLoading: false,
     }
   },
   created(){
+        let self = this;
+        this.userTableLoading = true;
         this.axios.get('getUser').then(res => {
-            this.userData = res.data;
+            self.userData = res.data;
+            self.userTableLoading = false
         })
   },
   methods:{
     tabClick(tab) {
         let self = this;
         if(tab.label == '帳號'){
+            self.userTableLoading = true;
             this.axios.get('getUser').then(res => {
                 self.userData = res.data;
+                self.userTableLoading = false
             })
         }
         else if(tab.label == '商品'){
+            self.productTableLoading = true;
             this.axios.get('getProduct').then(res => {
                 self.productData = res.data;
+                self.productTableLoading = false
             })
         }
         else if(tab.label == '其他'){
+            self.otherTableLoading = true;
             this.axios.get('getOther').then(res => {
                 self.otherData = res.data;
+                self.otherTableLoading = false
             })
         }
     },
