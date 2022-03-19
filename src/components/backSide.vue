@@ -159,8 +159,14 @@
 
         <el-dialog title="增加商品" :visible.sync="productAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
             <el-form :model="addproductData"  label-width="80px">
-                <el-form-item label="名稱" prop="name">
-                    <el-input v-model="addproductData.name" placeholder="請輸入名稱"></el-input>
+                <el-form-item label="品牌" prop="brand">
+                    <el-input v-model="addproductData.brand" placeholder="請輸入品牌"></el-input>
+                </el-form-item>
+                <el-form-item label="種類" prop="category">
+                    <el-input v-model="addproductData.category" placeholder="請輸入種類"></el-input>
+                </el-form-item>
+                <el-form-item label="商品" prop="name">
+                    <el-input v-model="addproductData.name" placeholder="請輸入商品"></el-input>
                 </el-form-item>
                 <el-form-item label="單價" prop="unitPrice">
                     <el-input v-model="addproductData.unitPrice" placeholder="請輸入單價"></el-input>
@@ -356,6 +362,7 @@ export default {
         this.axios.post("/addOther",{
             addotherData : this.addotherData
         }).then(res => {
+            console.log(res.data)
             self.otherData.push({
                 id: res.data,
                 name: self.addotherData.name,

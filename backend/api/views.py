@@ -109,26 +109,37 @@ def deleteOther(request):
 @csrf_exempt
 def addUser(request):
     '''新增使用者資料'''
-    if request.method == 'POST':
-        adduserData = json.loads(request.body)['adduserData']
-        User.objects.create(account=adduserData['account'], password=adduserData['password'])
-        newUserID = User.objects.get(account=adduserData['account'], password=adduserData['password']).id
-        return HttpResponse(newUserID)
+    try:
+        if request.method == 'POST':
+            adduserData = json.loads(request.body)['adduserData']
+            User.objects.create(account=adduserData['account'], password=adduserData['password'])
+            newUserID = User.objects.get(account=adduserData['account'], password=adduserData['password']).id
+            return HttpResponse(newUserID)
+    except Exception as e:
+        return HttpResponse(e)
 
 @csrf_exempt
 def addProduct(request):
     '''新增商品資料'''
-    if request.method == 'POST':
-        addproductData = json.loads(request.body)['addproductData']
-        Product.objects.create(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
-        newProductID = Product.objects.get(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice']).id
-        return HttpResponse(newProductID)
+    try:
+        if request.method == 'POST':
+            addproductData = json.loads(request.body)['addproductData']
+            Product.objects.create(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
+            newProductID = Product.objects.get(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice']).id
+            return HttpResponse(newProductID)
+    except Exception as e:
+        return HttpResponse(e)
+
 
 @csrf_exempt
 def addOther(request):
     '''新增其他資料'''
-    if request.method == 'POST':
-        addotherData = json.loads(request.body)['addotherData']
-        Other.objects.create(name=addotherData['name'], unitPrice=addotherData['unitPrice'])
-        newOtherID = Other.objects.get(name=addotherData['name'], unitPrice=addotherData['unitPrice']).id
-        return HttpResponse(newOtherID)
+    try:
+        if request.method == 'POST':
+            addotherData = json.loads(request.body)['addotherData']
+            Other.objects.create(name=addotherData['name'], unitPrice=addotherData['unitPrice'])
+            newOtherID = Other.objects.get(name=addotherData['name'], unitPrice=addotherData['unitPrice']).id
+            return HttpResponse(newOtherID)
+    except Exception as e:
+        return HttpResponse(e)
+
