@@ -20,4 +20,8 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
+.el-dialog__wrapper{
+  top: -10vh;
+}
 </style>

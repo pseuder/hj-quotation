@@ -140,6 +140,10 @@
         </el-tab-pane>
         <el-tab-pane label="服務項目" name="service">
             <div class="tab-body">
+                <div style="text-align: left; font-size: 28px;">
+                    新增服務項目
+                    <el-button type="info" style="font-size: 18px; padding: 3px;" icon="el-icon-brush" circle @click="clearServiceTable" size="small"></el-button>
+                </div>
                 <el-table :data="serviceTable" empty-text="尚無資料">
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -156,13 +160,16 @@
                 <el-button type="warning" icon="el-icon-plus" circle @click="openSpecificationDialog"></el-button>
             </div>
             <div class="tab-footer">
-                <el-button type="warning" @click="clearServiceTable" plain>清空</el-button>
                 <el-button type="primary" @click="changeTab('basic')" plain>上一步</el-button>
                 <el-button type="primary" @click="changeTab('other')">下一步</el-button>
             </div>
         </el-tab-pane>
         <el-tab-pane label="其他項目" name="other">
             <div class="tab-body">
+                <div style="text-align: left; font-size: 28px;">
+                    新增其他項目
+                    <el-button type="info" style="font-size: 18px; padding: 3px;" icon="el-icon-brush" circle @click="clearOtherTable" size="small"></el-button>
+                </div>
                 <el-table :data="otherTable" empty-text="尚無資料">
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -179,15 +186,14 @@
                 <el-button type="warning" icon="el-icon-plus" circle @click="openOtherDialog"></el-button>
             </div>
             <div class="tab-footer">
-                <el-button type="warning" @click="clearOtherTable" plain>清空</el-button>
                 <el-button type="primary" @click="changeTab('service')" plain>上一步</el-button>
                 <el-button type="primary" @click="changeTab('finish')">下一步</el-button>
             </div>
         </el-tab-pane>
         <el-tab-pane label="完成" name="finish">
             <div class="tab-body">
-                <div :style="{'height':finishDivHeight, 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
-                    <div style="height: 87%">
+                <div :style="{'height':'auto', 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
+                    <div style="">
                         <div style="" class="basic-info">
                             <div style="text-align:center; font-size: 35px;">報   價   單</div>
                             <div style="" class="toLeft">{{companyForm.name}}</div>
@@ -267,7 +273,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="height: 13%">
+                    <div style="height: 100px">
                         <div style="height:100%; " class="toLeft toFlex basic-info">
                             <div :style="{'margin':'auto', 'width': '25%'}">和進電器水電行:</div>
                             <div style="width: 25%;"></div>
@@ -712,6 +718,21 @@ export default {
         
     },
     addService(){
+        if(this.serviceTable.length + this.otherTable.length >= 10){
+            this.$message({message: '服務項目+其他服務不得超過10項!', type: 'warning'})
+            return;
+        }
+        //只能填寫數字
+        if(!this.addSpecificationValue.number.match(/^[0-9]*$/)){
+            this.$message({message: '數量只能填寫數字!', type: 'warning'})
+            return;
+        }
+        //只能填寫數字和逗號
+        if(!this.addSpecificationValue.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
+
         let fullSpecification = this.addSpecificationValue.brand + this.addSpecificationValue.category + this.addSpecificationValue.name;
         let totalPrice = (Number(this.addSpecificationValue.number) * Number(this.addSpecificationValue.unitPrice.replaceAll(',', ''))).toLocaleString();
         this.serviceTable.push({
@@ -771,6 +792,20 @@ export default {
         this.otherDialogVisible = true;
     },
     addOther(){
+        if(this.serviceTable.length + this.otherTable.length >= 10){
+            this.$message({message: '服務項目+其他服務不得超過10項!', type: 'warning'})
+            return;
+        }
+        //只能填寫數字
+        if(!this.addOtherValue.number.match(/^[0-9]*$/)){
+            this.$message({message: '數量只能填寫數字!', type: 'warning'})
+            return;
+        }
+        //只能填寫數字和逗號
+        if(!this.addOtherValue.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
         let totalPrice = (Number(this.addOtherValue.number) * Number(this.addOtherValue.unitPrice.replaceAll(',', ''))).toLocaleString();
         this.otherTable.push({
             specification: this.addOtherValue.specification,

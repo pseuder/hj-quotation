@@ -332,6 +332,11 @@ export default {
         this.showModal = true
     },
     productDialogSubmit(){
+        //只能填寫數字和逗號
+        if(!this.editproductData.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
         let self = this
         this.axios.post("/editProduct",{
             editproductData : this.editproductData
@@ -361,6 +366,11 @@ export default {
         this.showModal = true
     },
     otherDialogSubmit(){
+        //只能填寫數字和逗號
+        if(!this.editotherData.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
         let self = this
         this.axios.post("/editOther",{
             editotherData : this.editotherData
@@ -380,6 +390,11 @@ export default {
         })
     },
     otherAddDialogSubmit(){
+        //只能填寫數字和逗號
+        if(!this.addotherData.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
         let self = this
         this.axios.post("/addOther",{
             addotherData : this.addotherData
@@ -426,6 +441,11 @@ export default {
         this.showModal = true
     },
     productAddDialogSubmit(){
+        //只能填寫數字和逗號
+        if(!this.addproductData.unitPrice.match(/^[0-9,]*$/)){
+            this.$message({message: '單價只能填寫數字和逗號!', type: 'warning'})
+            return;
+        }
         let self = this
         this.axios.post("/addProduct",{
             addproductData : this.addproductData
