@@ -56,182 +56,224 @@
 
 <template>
 <div style="width: 90%; margin: auto auto">
-    <div style="position:relative">
-        <el-tabs type="border-card" v-model="tabsValue" >
-            <el-tab-pane label="基本資料" name="basic">
-                <div class="tab-body">
-                    <el-form label-width="80px">
-                        <div style="text-align: left; font-size: 28px;">店家</div>
-                        <el-form-item label="店家名稱">
-                            <el-input v-model="companyForm.name"></el-input>
-                        </el-form-item>
-                        <el-form-item label="店家地址">
-                            <el-input v-model="companyForm.address"></el-input>
-                        </el-form-item>
-                        <el-form-item label="店家電話">
-                            <el-input v-model="companyForm.telephone"></el-input>
-                        </el-form-item>
-                        <el-form-item label="店家傳真">
-                            <el-input v-model="companyForm.fax"></el-input>
-                        </el-form-item>
-
-                        
-                        <div style="text-align: left; font-size: 28px;">客戶</div>
-                        <el-form-item label="客戶名稱">
-                            <el-input v-model="clientForm.name"></el-input>
-                        </el-form-item>
-                        <el-form-item label="客戶地址">
-                            <el-input v-model="clientForm.address"></el-input>
-                        </el-form-item>
-                        <el-form-item label="客戶電話">
-                            <el-input v-model="clientForm.telephone"></el-input>
-                        </el-form-item>
-                        <el-form-item label="客戶傳真">
-                            <el-input v-model="clientForm.fax"></el-input>
-                        </el-form-item>
-                        <el-form-item label="客戶信箱">
-                            <el-input v-model="clientForm.email"></el-input>
-                        </el-form-item>
-                        <el-form-item label="日期">
-                            <div style="width:100%; text-align: left;">
-                                <el-date-picker
-                                    v-model="clientForm.date"
-                                    align="right"
-                                    type="date"
-                                    placeholder="選擇日期"
-                                    :picker-options="pickerOptions" />
-                            <div>
-                        </el-form-item>
-                        
-                    </el-form>
+    <el-tabs type="border-card" v-model="tabsValue" >
+        <el-tab-pane label="設定" name="setting">
+            <span slot="label"><i class="el-icon-setting"></i> 設定</span>
+            <div class="tab-body">
+                <div style="margin: 30px;">
+                    <el-button type="warning" style="font-size: 23px; width: 160px;" icon="el-icon-coin"   @click="goBackSide">資料修改</el-button>
                 </div>
-                <div style="" class="tab-footer">
-                    <el-button type="primary" @click="changeTab('service')">下一步</el-button>
+                <div style="margin: 30px;">
+                    <el-button type="danger" style="font-size: 23px; width: 160px;" icon="el-icon-switch-button"   @click="logOut">登出</el-button>
                 </div>
-            </el-tab-pane>
-            <el-tab-pane label="服務項目" name="service">
-                <div class="tab-body">
-                    <el-table :data="serviceTable" empty-text="尚無資料">
-                        <el-table-column label="操作">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteService(scope.$index, scope.row)"></el-button>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="規格" prop="specification"></el-table-column>
-                        <el-table-column label="數量" prop="number"></el-table-column>
-                        <el-table-column label="單位" prop="unit"></el-table-column>
-                        <el-table-column label="單價" prop="unitPrice"></el-table-column>
-                        <el-table-column label="金額" prop="price"></el-table-column>
-                        <el-table-column label="備註" prop="remark"></el-table-column>
-                    </el-table>
-                    <el-button type="warning" icon="el-icon-plus" circle @click="openSpecificationDialog"></el-button>
-                </div>
-                <div class="tab-footer">
-                    <el-button type="primary" @click="changeTab('basic')" plain>上一步</el-button>
-                    <el-button type="primary" @click="changeTab('other')">下一步</el-button>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="其他項目" name="other">
-                <div class="tab-body">
-                    其他項目
-                </div>
-                <div class="tab-footer">
-                    <el-button type="primary" @click="changeTab('service')" plain>上一步</el-button>
-                    <el-button type="primary" @click="changeTab('finish')">下一步</el-button>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="完成" name="finish">
-                <div class="tab-body">
-                    <div :style="{'height':finishDivHeight, 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
-                        <div style="height: 85%">
-                            <div style="" class="basic-info">
-                                <div style="text-align:center; font-size: 35px;">報   價   單</div>
-                                <div style="" class="toLeft">{{companyForm.name}}</div>
-                                <div style="" class="toLeft">{{companyForm.address}}</div>
-                                <div style="" class="toFlex">
-                                    <div style="">TEL：{{companyForm.telephone}}</div>
-                                    <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
-                                </div>
-                                <br>
-                                <div style="" class="toFlex">
-                                    <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
-                                    <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
-                                </div>
-                                <div style="" class="toFlex">
-                                    <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
-                                    <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
-                                </div>
-                                <div style="" class="toLeft">地址：{{clientForm.address}}</div>
-                                <div style="" class="toLeft">Email：{{clientForm.email}}</div>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="基本資料" name="basic">
+            <div class="tab-body">
+                <el-form label-width="80px">
+                    <div style="text-align: left; font-size: 28px;">
+                        店家資料
+                        <el-button type="info" style="font-size: 18px; padding: 3px;" icon="el-icon-brush" circle @click="clearCompanyForm" size="medium"></el-button>
+                    </div>
+                    <br>
+                    <el-form-item label="店家名稱">
+                        <el-input v-model="companyForm.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="店家地址">
+                        <el-input v-model="companyForm.address"></el-input>
+                    </el-form-item>
+                    <el-form-item label="店家電話">
+                        <el-input v-model="companyForm.telephone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="店家傳真">
+                        <el-input v-model="companyForm.fax"></el-input>
+                    </el-form-item>
+                    
+                    <div style="text-align: left; font-size: 28px;">
+                        客戶資料
+                        <el-button type="info" style="font-size: 18px; padding: 3px;" icon="el-icon-brush" circle @click="clearClientForm" size="small"></el-button>
+                    </div>
+                    <br>
+                    <el-form-item label="客戶名稱">
+                        <el-input v-model="clientForm.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客戶地址">
+                        <el-input v-model="clientForm.address"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客戶電話">
+                        <el-input v-model="clientForm.telephone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客戶傳真">
+                        <el-input v-model="clientForm.fax"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客戶信箱">
+                        <el-input v-model="clientForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="日期">
+                        <div style="width:100%; text-align: left;">
+                            <el-date-picker
+                                v-model="clientForm.date"
+                                align="right"
+                                type="date"
+                                placeholder="選擇日期"
+                                :picker-options="pickerOptions" />
+                        <div>
+                    </el-form-item>
+                    
+                </el-form>
+            </div>
+            <div style="" class="tab-footer">
+                <el-button type="primary" @click="changeTab('service')">下一步</el-button>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="服務項目" name="service">
+            <div class="tab-body">
+                <el-table :data="serviceTable" empty-text="尚無資料">
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteService(scope.$index, scope.row)"></el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="規格" prop="specification"></el-table-column>
+                    <el-table-column label="數量" prop="number"></el-table-column>
+                    <el-table-column label="單位" prop="unit"></el-table-column>
+                    <el-table-column label="單價" prop="unitPrice"></el-table-column>
+                    <el-table-column label="金額" prop="price"></el-table-column>
+                    <el-table-column label="備註" prop="remark"></el-table-column>
+                </el-table>
+                <el-button type="warning" icon="el-icon-plus" circle @click="openSpecificationDialog"></el-button>
+            </div>
+            <div class="tab-footer">
+                <el-button type="warning" @click="clearServiceTable" plain>清空</el-button>
+                <el-button type="primary" @click="changeTab('basic')" plain>上一步</el-button>
+                <el-button type="primary" @click="changeTab('other')">下一步</el-button>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="其他項目" name="other">
+            <div class="tab-body">
+                <el-table :data="otherTable" empty-text="尚無資料">
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteOther(scope.$index, scope.row)"></el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="規格" prop="specification"></el-table-column>
+                    <el-table-column label="數量" prop="number"></el-table-column>
+                    <el-table-column label="單位" prop="unit"></el-table-column>
+                    <el-table-column label="單價" prop="unitPrice"></el-table-column>
+                    <el-table-column label="金額" prop="price"></el-table-column>
+                    <el-table-column label="備註" prop="remark"></el-table-column>
+                </el-table>
+                <el-button type="warning" icon="el-icon-plus" circle @click="openOtherDialog"></el-button>
+            </div>
+            <div class="tab-footer">
+                <el-button type="warning" @click="clearOtherTable" plain>清空</el-button>
+                <el-button type="primary" @click="changeTab('service')" plain>上一步</el-button>
+                <el-button type="primary" @click="changeTab('finish')">下一步</el-button>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="完成" name="finish">
+            <div class="tab-body">
+                <div :style="{'height':finishDivHeight, 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
+                    <div style="height: 85%">
+                        <div style="" class="basic-info">
+                            <div style="text-align:center; font-size: 35px;">報   價   單</div>
+                            <div style="" class="toLeft">{{companyForm.name}}</div>
+                            <div style="" class="toLeft">{{companyForm.address}}</div>
+                            <div style="" class="toFlex">
+                                <div style="">TEL：{{companyForm.telephone}}</div>
+                                <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
                             </div>
-                            <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; letter-spacing: 32px; text-align: center;" class="basic-info">
-                                國際分離式變頻空調工程
+                            <br>
+                            <div style="" class="toFlex">
+                                <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
+                                <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
                             </div>
-                            <table border style="border-collapse:collapse; width:100%; font-family: PMingLiU;">
-                                <tr style="">
-                                    <th width="45%">空調設備規格</th>
-                                    <th width="6%">數量</th>
-                                    <th width="6%">單位</th>
-                                    <th width="13%">單價</th>
-                                    <th width="13%">金額</th>
-                                    <th width="17%">備註</th>
-                                </tr>
-                                <tr v-for="item in serviceTable" :key="item">
-                                    <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
-                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
-                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
-                                    <td style="max-width: 13%; text-align:right;" class="table-td">
-                                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
-                                    </td>
-                                    <td style="max-width: 13%; text-align:right;" class="table-td">
-                                        <div style="margin-right: 4px;">${{item.price}}</div>
-                                    </td>
-                                    <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
-                                </tr>
-                                <tr v-for="item of 10-serviceTable.length" :key="item">
-                                    <td v-for="item of 6" :key="item" class="table-td"></td>
-                                </tr>
-                                <tr>
-                                    <td class="toLeft table-td">施工日期:</td>
-                                    <td v-for="item of 5" :key="item" class="table-td"></td>
-                                </tr>
-                                <tr>
-                                    <td v-for="item of 6" :key="item" class="table-td"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6" class="toLeft table-td">
-                                        <span style="margin-right: 15%;">訂金:</span>
-                                        <span style="margin-right: 15%;">機器設備款:</span>
-                                        <span>完成款:</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
-                                    <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
-                                </tr>
-                            </table>
+                            <div style="" class="toFlex">
+                                <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
+                                <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
+                            </div>
+                            <div style="" class="toLeft">地址：{{clientForm.address}}</div>
+                            <div style="" class="toLeft">Email：{{clientForm.email}}</div>
                         </div>
-                        <div style="height: 150px">
-                            <div style="" class="toLeft toFlex basic-info">
-                                <div :style="{'line-height':finishSignLineHeight, 'width': '25%'}">和進電器水電行:</div>
-                                <div style="width: 25%;"></div>
-                                <div :style="{'line-height':finishSignLineHeight, 'width': '20%'}">客戶簽名:</div>
-                                <div style="width: 30%;">
-                                    <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true" />
-                                    <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true" />
-                                </div>
+                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; letter-spacing: 32px; text-align: center;" class="basic-info">
+                            國際分離式變頻空調工程
+                        </div>
+                        <table border style="border-collapse:collapse; width:100%; font-family: PMingLiU;">
+                            <tr style="">
+                                <th width="45%">空調設備規格</th>
+                                <th width="6%">數量</th>
+                                <th width="6%">單位</th>
+                                <th width="13%">單價</th>
+                                <th width="13%">金額</th>
+                                <th width="17%">備註</th>
+                            </tr>
+                            <tr v-for="item in serviceTable" :key="item">
+                                <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                                <td style="max-width: 13%; text-align:right;" class="table-td">
+                                    <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                                </td>
+                                <td style="max-width: 13%; text-align:right;" class="table-td">
+                                    <div style="margin-right: 4px;">${{item.price}}</div>
+                                </td>
+                                <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                            </tr>
+                            <tr v-for="item in otherTable" :key="item">
+                                <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                                <td style="max-width: 13%; text-align:right;" class="table-td">
+                                    <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                                </td>
+                                <td style="max-width: 13%; text-align:right;" class="table-td">
+                                    <div style="margin-right: 4px;">${{item.price}}</div>
+                                </td>
+                                <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                            </tr>
+                            <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
+                                <td v-for="item of 6" :key="item" class="table-td"></td>
+                            </tr>
+                            <tr>
+                                <td class="toLeft table-td">施工日期:</td>
+                                <td v-for="item of 5" :key="item" class="table-td"></td>
+                            </tr>
+                            <tr>
+                                <td v-for="item of 6" :key="item" class="table-td"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="toLeft table-td">
+                                    <span style="margin-right: 15%;">訂金:</span>
+                                    <span style="margin-right: 15%;">機器設備款:</span>
+                                    <span>完成款:</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
+                                <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="height: 150px">
+                        <div style="" class="toLeft toFlex basic-info">
+                            <div :style="{'line-height':finishSignLineHeight, 'width': '25%'}">和進電器水電行:</div>
+                            <div style="width: 25%;"></div>
+                            <div :style="{'line-height':finishSignLineHeight, 'width': '20%'}">客戶簽名:</div>
+                            <div style="width: 30%;">
+                                <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true" />
+                                <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="tab-footer">
-                    <el-button type="primary" @click="changeTab('other')" plain>上一步</el-button>
-                    <el-button type="primary" @click="generateReport">下載PDF</el-button>
-                </div>
-            </el-tab-pane>
-        </el-tabs>
-        <el-button type="primary" style="position:absolute; right:10px; top:40px; font-size: 23px;" icon="el-icon-setting" circle  @click="goBackSide"/>
-    </div>
+            </div>
+            <div class="tab-footer">
+                <el-button type="primary" @click="changeTab('other')" plain>上一步</el-button>
+                <el-button type="primary" @click="generateReport">下載PDF</el-button>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
     
     <el-dialog title="選擇空調設備規格" :visible.sync="specificationDialogVisible" :close-on-click-modal="false" :modal="false">
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
@@ -287,6 +329,33 @@
         </span>
     </el-dialog>
 
+    <el-dialog title="輸入其他服務" :visible.sync="otherDialogVisible" :close-on-click-modal="false" :modal="false">
+        <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
+            <el-form :model="addOtherValue" >
+                <el-form-item label="服務名稱">
+                    <el-input v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
+                </el-form-item>
+                <el-form-item label="數量">
+                    <el-input v-model="addOtherValue.number" placeholder="輸入數量"></el-input>
+                </el-form-item>
+                <el-form-item label="單位">
+                    <el-input v-model="addOtherValue.unit" placeholder="輸入單位"></el-input>
+                </el-form-item>
+                <el-form-item label="單價">
+                    <el-input v-model="addOtherValue.unitPrice" placeholder="輸入單價"></el-input>
+                </el-form-item>
+                <el-form-item label="備註">
+                    <el-input v-model="addOtherValue.remark" placeholder="輸入備註"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="warning" plain @click="openOtherDialog">清空</el-button>
+            <el-button type="primary" plain @click="otherDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addOther">確 定</el-button>
+        </span>
+    </el-dialog>
+
     <el-dialog title="客戶簽名" :visible.sync="signCanvasVisible" :close-on-click-modal="false" width="80%" :modal="false">
         <div>
             <vue-esign 
@@ -306,6 +375,8 @@
             </div>
         </div>
     </el-dialog>
+
+
 
 
     <!-- PDF實際下載根據，不顯示 -->
@@ -374,7 +445,19 @@
                     </td>
                     <td style="max-width: 165px; text-align:center;" class="table-td">{{item.remark}}</td>
                 </tr>
-                <tr v-for="item of 10-serviceTable.length" :key="item">
+                <tr v-for="item in otherTable" :key="item">
+                    <td style="max-width: 365px; text-align:left;" class="table-td">{{item.specification}}</td>
+                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.number}}</td>
+                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.unit}}</td>
+                    <td style="max-width: 100px; text-align:right;" class="table-td">
+                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                    </td>
+                    <td style="max-width: 100px; text-align:right;" class="table-td">
+                        <div style="margin-right: 4px;">${{item.price}}</div>
+                    </td>
+                    <td style="max-width: 165px; text-align:center;" class="table-td">{{item.remark}}</td>
+                </tr>
+                <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
                     <td v-for="item of 6" :key="item" class="table-td"></td>
                 </tr>
                 <tr>
@@ -457,6 +540,15 @@ export default {
                 unitPrice:'',
                 remark:'',
             },
+            otherTable:[],
+            otherDialogVisible: false,
+            addOtherValue:{
+                specification:'',
+                number:'1',
+                unit:'',
+                unitPrice:'0',
+                remark:'',
+            },
             allProduct:[],
             clientSignImg: '',
             signCanvasVisible: false,
@@ -528,9 +620,14 @@ export default {
       };
     },
     allPrice(){
-        return this.serviceTable.reduce((total, item)=>{
-            return (Number(String(total).replaceAll(',', ''))+Number(String(item.price).replaceAll(',', ''))).toLocaleString()
-        }, 0);
+        let allPrice = 0;
+        this.serviceTable.forEach(function(item){
+            allPrice += Number(String(item.price).replaceAll(',', ''))
+        })
+        this.otherTable.forEach(function(item){
+            allPrice += Number(String(item.price).replaceAll(',', ''))
+        })
+        return allPrice.toLocaleString();
     }
   },
   methods:{
@@ -612,6 +709,51 @@ export default {
     goBackSide(){
         this.$router.push({name: 'backSide'});
     },
+    logOut(){
+        sessionStorage.clear();
+        this.$router.push({name: 'login'});
+    },
+    clearCompanyForm(){
+        this.companyForm.name = '';
+        this.companyForm.address = '';
+        this.companyForm.telephone = '';
+        this.companyForm.fax = '';
+    },
+    clearClientForm(){
+        this.clientForm.name = '';
+        this.clientForm.address = '';
+        this.clientForm.telephone = '';
+        this.clientForm.fax = '';
+        this.clientForm.email = '';
+        this.clientForm.date = new Date();
+    },
+    clearServiceTable(){
+        this.serviceTable = [];
+    },
+    openOtherDialog(){
+        this.addOtherValue.specification = '';
+        this.addOtherValue.number = '1';
+        this.addOtherValue.unit = '';
+        this.addOtherValue.unitPrice = '0';
+        this.addOtherValue.remark = '';
+        this.otherDialogVisible = true;
+    },
+    addOther(){
+        let totalPrice = (Number(this.addOtherValue.number) * Number(this.addOtherValue.unitPrice.replaceAll(',', ''))).toLocaleString();
+        this.otherTable.push({
+            specification: this.addOtherValue.specification,
+            number: this.addOtherValue.number,
+            unit: this.addOtherValue.unit,
+            unitPrice: this.addOtherValue.unitPrice,
+            price: totalPrice,
+            remark: this.addOtherValue.remark,
+        })
+        this.otherDialogVisible = false;
+    },
+    clearOtherTable(){
+        this.otherTable = [];
+    },
+
   }
 }
 </script>

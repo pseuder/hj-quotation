@@ -9,12 +9,12 @@
     font-size:20px;
 }
 .input{
-    width:400px;
+    width:100%;
     border-color:black;
 }
 .button{
     font-size:30px;
-    width:400px;
+    width:100%;
     background-color:#439EFF;
     color:black;
 }
@@ -31,12 +31,12 @@
 
 <template>
   <div style="margin: auto auto">
-    <el-card style="margin:100px auto; width:500px;">
-        <div style="margin:0 auto; width:400px; font-size:20px">
+    <el-card style="margin:100px auto; width:90%; max-width:500px;">
+        <div style="margin:0 auto; width:90%; font-size:20px">
             <br><br>
             <div class="title">登入</div><br><br>
             <div class="caption">帳號</div>
-            <el-input class="input" v-model="account" placeholder="請輸入帳號(使用者名稱)"></el-input><br><br>
+            <el-input class="input" v-model="account" placeholder="請輸入帳號"></el-input><br><br>
             <div class="caption">密碼</div>
             <el-input class="input" v-model="password" placeholder="請輸入密碼" show-password></el-input><br><br><br>
             <el-button class="button"  plain @click="login">Log in</el-button><br><br>
@@ -81,7 +81,6 @@ export default {
         }).then(function(response){
 
             if(response.data == 'success'){
-                self.$message({message: '登入成功!', type: 'success'});
                 sessionStorage.setItem("login", "true");//登入狀態
                 self.$router.push({name: 'main'});
             }

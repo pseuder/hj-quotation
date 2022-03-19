@@ -9,50 +9,57 @@
 <template>
     <div>
         <div style="width: 90%; margin: auto auto">
-            <div style="position:relative">
-                <el-tabs type="border-card" @tab-click="tabClick">
-                    <el-tab-pane label="帳號">
-                        <div class="tab-body">
-                            <el-table :data="userData" style="width: 100%; height:93%; overflow: auto">
-                                <el-table-column label="帳號" prop="account">
-                                </el-table-column>
-                                <el-table-column label="密碼" prop="password">
-                                </el-table-column>
-                                <el-table-column label="操作" width="180">
-                                    <template slot-scope="scope">
-                                        <el-button type="text" size="mini" @click="userEdit(scope.$index, scope.row)">編輯</el-button>
-                                        <el-button type="text" size="mini" @click="userDelete(scope.$index, scope.row)">刪除</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                            <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="userAdd" circle icon="el-icon-plus"></el-button>
+            <el-tabs type="border-card" @tab-click="tabClick" v-model="tabsValue">
+                <el-tab-pane label="設定" name="setting">
+                    <span slot="label"><i class="el-icon-setting"></i> 設定</span>
+                    <div class="tab-body">
+                        <div style="margin: 30px;">
+                            <el-button type="warning" style="font-size: 23px; width: 160px;" icon="el-icon-s-home"  @click="goMain">主頁面</el-button>
                         </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="商品">
-                        <div class="tab-body">
-                            <el-table :data="productData" style="width: 100%; height:93%; overflow: auto" :default-sort = "{prop: 'date', order: 'descending'}">
-                                <el-table-column label="廠牌" prop="brand" sortable>
-                                </el-table-column>
-                                <el-table-column label="種類" prop="category" sortable>
-                                </el-table-column>
-                                <el-table-column label="名稱" prop="name" sortable>
-                                </el-table-column>
-                                <el-table-column label="單價" prop="unitPrice" sortable>
-                                </el-table-column>
-                                <el-table-column label="操作" width="180">
-                                    <template slot-scope="scope">
-                                        <el-button type="text" size="mini" @click="productEdit(scope.$index, scope.row)">編輯</el-button>
-                                        <el-button type="text" size="mini" @click="productDelete(scope.$index, scope.row)">刪除</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                            <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="productAdd" circle icon="el-icon-plus"></el-button>
+                        <div style="margin: 30px;">
+                            <el-button type="danger" style="font-size: 23px; width: 160px;" icon="el-icon-switch-button"   @click="logOut">登出</el-button>
                         </div>
-                    </el-tab-pane>
-                </el-tabs>
-                <el-button type="primary" style="position:absolute; right:10px; top:40px; font-size: 23px;" icon="el-icon-s-home" circle  @click="goMain"/>
-            </div>
-            
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="帳號" name="account">
+                    <div class="tab-body">
+                        <el-table :data="userData" style="width: 100%; height:93%; overflow: auto">
+                            <el-table-column label="帳號" prop="account">
+                            </el-table-column>
+                            <el-table-column label="密碼" prop="password">
+                            </el-table-column>
+                            <el-table-column label="操作" width="180">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="userEdit(scope.$index, scope.row)">編輯</el-button>
+                                    <el-button type="text" size="mini" @click="userDelete(scope.$index, scope.row)">刪除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="userAdd" circle icon="el-icon-plus"></el-button>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="商品" name="product">
+                    <div class="tab-body">
+                        <el-table :data="productData" style="width: 100%; height:93%; overflow: auto" :default-sort = "{prop: 'date', order: 'descending'}">
+                            <el-table-column label="廠牌" prop="brand" sortable>
+                            </el-table-column>
+                            <el-table-column label="種類" prop="category" sortable>
+                            </el-table-column>
+                            <el-table-column label="名稱" prop="name" sortable>
+                            </el-table-column>
+                            <el-table-column label="單價" prop="unitPrice" sortable>
+                            </el-table-column>
+                            <el-table-column label="操作" width="180">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="productEdit(scope.$index, scope.row)">編輯</el-button>
+                                    <el-button type="text" size="mini" @click="productDelete(scope.$index, scope.row)">刪除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="productAdd" circle icon="el-icon-plus"></el-button>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
         </div>
 
         <el-dialog title="修改帳號" :visible.sync="userDialogVisible" width="50%" :close-on-click-modal="false" :modal="false">
@@ -135,6 +142,7 @@ export default {
   name: 'BackSide',
   data: function() {
     return { 
+        tabsValue: 'account',
         userData: [],
         productData: [],
         userDialogVisible: false,
@@ -272,6 +280,10 @@ export default {
     },
     goMain(){
         this.$router.push('/main')
+    },
+    logOut(){
+        sessionStorage.clear();
+        this.$router.push('/login')
     },
   }
 }
