@@ -5,15 +5,15 @@
     overflow:auto;
 }
 .myModal{
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     position: absolute;
     filter: blur(10px);
     z-index: 10;
-    background: lightgray;
-    top: 6px;
-    right: 96px;
-    opacity: 0.5;
+    background: #d3d3d3;
+    top: 0px;
+    left: 0px;
+    opacity: .5;
 }
 </style>
 

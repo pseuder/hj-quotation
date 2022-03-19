@@ -48,15 +48,15 @@
     margin: 0 auto;
 }
 .myModal{
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     position: absolute;
     filter: blur(10px);
     z-index: 10;
-    background: lightgray;
-    top: 6px;
-    right: 96px;
-    opacity: 0.5;
+    background: #d3d3d3;
+    top: 0px;
+    left: 0px;
+    opacity: .5;
 }
 
 </style>
@@ -344,15 +344,14 @@
     <el-dialog title="輸入其他服務" :visible.sync="otherDialogVisible" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
             <el-form :model="addOtherValue" >
-                <el-form-item label="服務名稱">
-                    <div style="display:flex; width:100%">
-                        <el-select style="width:50%" v-model="addOtherValue.specification" placeholder="選擇服務名稱" @change="addOtherSelectChange">
-                            <el-option v-for="item in addOtherOption" :key="item.name" :label="item.name" :value="item.name">
-                            </el-option>
-                        </el-select>
-                        或
-                        <el-input style="width:50%" v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
-                    </div>
+                <el-form-item label="選擇服務名稱">
+                    <el-select style="width:100%" v-model="addOtherValue.specification" placeholder="選擇服務名稱" @change="addOtherSelectChange">
+                        <el-option v-for="item in addOtherOption" :key="item.name" :label="item.name" :value="item.name">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="輸入服務名稱">
+                    <el-input v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
                 </el-form-item>
                 <el-form-item label="數量">
                     <el-input v-model="addOtherValue.number" placeholder="輸入數量"></el-input>
@@ -510,8 +509,7 @@
     </section>
     </vue-html2pdf>
 
-    
-        
+</div>
 </template>
 
 <script>
