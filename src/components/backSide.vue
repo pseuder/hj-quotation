@@ -4,11 +4,23 @@
     height:80vh; 
     overflow:auto;
 }
+.myModal{
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    filter: blur(10px);
+    z-index: 10;
+    background: lightgray;
+    top: 6px;
+    right: 96px;
+    opacity: 0.5;
+}
 </style>
 
 <template>
     <div>
         <div style="width: 90%; margin: auto auto">
+            <div  v-if="showModal" class="myModal"></div>
             <el-tabs type="border-card" @tab-click="tabClick" v-model="tabsValue">
                 <el-tab-pane label="設定" name="setting">
                     <span slot="label"><i class="el-icon-setting"></i> 設定</span>
@@ -59,10 +71,27 @@
                         <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="productAdd" circle icon="el-icon-plus"></el-button>
                     </div>
                 </el-tab-pane>
+                <el-tab-pane label="其他" name="other">
+                    <div class="tab-body">
+                        <el-table :data="otherData" style="width: 100%; height:93%; overflow: auto" :default-sort = "{prop: 'date', order: 'descending'}">
+                            <el-table-column label="名稱" prop="name" sortable>
+                            </el-table-column>
+                            <el-table-column label="單價" prop="unitPrice" sortable>
+                            </el-table-column>
+                            <el-table-column label="操作" width="180">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="otherEdit(scope.$index, scope.row)">編輯</el-button>
+                                    <el-button type="text" size="mini" @click="otherDelete(scope.$index, scope.row)">刪除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="otherAdd" circle icon="el-icon-plus"></el-button>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
 
-        <el-dialog title="修改帳號" :visible.sync="userDialogVisible" width="50%" :close-on-click-modal="false" :modal="false">
+        <el-dialog title="修改帳號" :visible.sync="userDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
             <el-form :model="edituserData"  label-width="80px">
                 <el-form-item label="帳號" prop="account">
                     <el-input v-model="edituserData.account" placeholder="請輸入帳號"></el-input>
@@ -72,12 +101,12 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="userDialogVisible = false">取 消</el-button>
+                <el-button @click="userDialogVisible = false; showModal = false">取 消</el-button>
                 <el-button type="primary" @click="userDialogSubmit">確 定</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog title="修改商品" :visible.sync="productDialogVisible" width="50%" :close-on-click-modal="false" :modal="false">
+        <el-dialog title="修改商品" :visible.sync="productDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
             <el-form :model="editproductData"  label-width="80px">
                 <el-form-item label="廠牌" prop="brand">
                     <el-input v-model="editproductData.brand" placeholder="請輸入廠牌"></el-input>
@@ -93,12 +122,27 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="productDialogVisible = false">取 消</el-button>
+                <el-button @click="productDialogVisible = false; showModal = false">取 消</el-button>
                 <el-button type="primary" @click="productDialogSubmit">確 定</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog title="增加使用者" :visible.sync="userAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false">
+        <el-dialog title="修改其他" :visible.sync="otherDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+            <el-form :model="editotherData"  label-width="80px">
+                <el-form-item label="名稱" prop="name">
+                    <el-input v-model="editotherData.name" placeholder="請輸入名稱"></el-input>
+                </el-form-item>
+                <el-form-item label="單價" prop="unitPrice">
+                    <el-input v-model="editotherData.unitPrice" placeholder="請輸入單價"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="otherDialogVisible = false; showModal = false">取 消</el-button>
+                <el-button type="primary" @click="otherDialogSubmit">確 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="增加使用者" :visible.sync="userAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
             <el-form :model="adduserData"  label-width="80px">
                 <el-form-item label="帳號" prop="account">
                     <el-input v-model="adduserData.account" placeholder="請輸入帳號"></el-input>
@@ -108,19 +152,13 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="userAddDialogVisible = false">取 消</el-button>
+                <el-button @click="userAddDialogVisible = false; showModal = false">取 消</el-button>
                 <el-button type="primary" @click="userAddDialogSubmit">確 定</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog title="增加商品" :visible.sync="productAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false">
+        <el-dialog title="增加商品" :visible.sync="productAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
             <el-form :model="addproductData"  label-width="80px">
-                <el-form-item label="廠牌" prop="brand">
-                    <el-input v-model="addproductData.brand" placeholder="請輸入廠牌"></el-input>
-                </el-form-item>
-                <el-form-item label="種類" prop="category">
-                    <el-input v-model="addproductData.category" placeholder="請輸入種類"></el-input>
-                </el-form-item>
                 <el-form-item label="名稱" prop="name">
                     <el-input v-model="addproductData.name" placeholder="請輸入名稱"></el-input>
                 </el-form-item>
@@ -129,8 +167,23 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="productAddDialogVisible = false">取 消</el-button>
+                <el-button @click="productAddDialogVisible = false; showModal = false">取 消</el-button>
                 <el-button type="primary" @click="productAddDialogSubmit">確 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="增加其他" :visible.sync="otherAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+            <el-form :model="addotherData"  label-width="80px">
+                <el-form-item label="名稱" prop="name">
+                    <el-input v-model="addotherData.name" placeholder="請輸入名稱"></el-input>
+                </el-form-item>
+                <el-form-item label="單價" prop="unitPrice">
+                    <el-input v-model="addotherData.unitPrice" placeholder="請輸入單價"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="otherAddDialogVisible = false; showModal = false">取 消</el-button>
+                <el-button type="primary" @click="otherAddDialogSubmit">確 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -142,9 +195,11 @@ export default {
   name: 'BackSide',
   data: function() {
     return { 
+        showModal: false,
         tabsValue: 'account',
         userData: [],
         productData: [],
+        otherData:[],
         userDialogVisible: false,
         edituserData:{
             id: '',
@@ -161,6 +216,13 @@ export default {
             unitPrice: '',
             index:'',
         },
+        otherDialogVisible: false,
+        editotherData:{
+            id: '',
+            name: '',
+            unitPrice: '',
+            index:'',
+        },
         userAddDialogVisible: false,
         adduserData:{
             account: '',
@@ -173,6 +235,11 @@ export default {
             name: '',
             unitPrice: '',
         },
+        otherAddDialogVisible: false,
+        addotherData:{
+            name: '',
+            unitPrice: '',
+        },
     }
   },
   created(){
@@ -182,9 +249,20 @@ export default {
   },
   methods:{
     tabClick(tab) {
-        if(tab.label == '商品'){
+        let self = this;
+        if(tab.label == '帳號'){
+            this.axios.get('getUser').then(res => {
+                self.userData = res.data;
+            })
+        }
+        else if(tab.label == '商品'){
             this.axios.get('getProduct').then(res => {
-                this.productData = res.data;
+                self.productData = res.data;
+            })
+        }
+        else if(tab.label == '其他'){
+            this.axios.get('getOther').then(res => {
+                self.otherData = res.data;
             })
         }
     },
@@ -194,6 +272,7 @@ export default {
         this.edituserData.password = row.password
         this.edituserData.index = index;
         this.userDialogVisible = true
+        this.showModal = true
     },
     userDialogSubmit(){
         let self = this
@@ -201,6 +280,7 @@ export default {
             edituserData : this.edituserData
         }).then(res => {
             self.userDialogVisible = false;
+            this.showModal = false
             self.userData[self.edituserData.index].account = self.edituserData.account
             self.userData[self.edituserData.index].password = self.edituserData.password
         })
@@ -221,6 +301,7 @@ export default {
         this.editproductData.unitPrice = row.unitPrice
         this.editproductData.index = index;
         this.productDialogVisible = true
+        this.showModal = true
     },
     productDialogSubmit(){
         let self = this
@@ -228,6 +309,7 @@ export default {
             editproductData : this.editproductData
         }).then(res => {
             self.productDialogVisible = false;
+            self.showModal = false
             self.productData[self.editproductData.index].brand = self.editproductData.brand
             self.productData[self.editproductData.index].category = self.editproductData.category
             self.productData[self.editproductData.index].name = self.editproductData.name
@@ -242,8 +324,56 @@ export default {
             self.productData.splice(index, 1)
         })
     },
+    otherEdit(index, row){
+        this.editotherData.id = row.id;
+        this.editotherData.name = row.name
+        this.editotherData.unitPrice = row.unitPrice
+        this.editotherData.index = index;
+        this.otherDialogVisible = true
+        this.showModal = true
+    },
+    otherDialogSubmit(){
+        let self = this
+        this.axios.post("/editOther",{
+            editotherData : this.editotherData
+        }).then(res => {
+            self.otherDialogVisible = false;
+            self.showModal = false
+            self.otherData[self.editotherData.index].name = self.editotherData.name
+            self.otherData[self.editotherData.index].unitPrice = self.editotherData.unitPrice
+        })
+    },
+    otherDelete(index, row){
+        let self = this
+        this.axios.post("/deleteOther",{
+            id : row.id
+        }).then(res => {
+            self.otherData.splice(index, 1)
+        })
+    },
+    otherAddDialogSubmit(){
+        let self = this
+        this.axios.post("/addOther",{
+            addotherData : this.addotherData
+        }).then(res => {
+            self.otherData.push({
+                id: res.data,
+                name: self.addotherData.name,
+                unitPrice: self.addotherData.unitPrice,
+            })
+            self.addotherData.name = ''
+            self.addotherData.unitPrice = ''
+            self.otherAddDialogVisible = false;
+            self.showModal = false
+        })
+    },
+    otherAdd(){
+        this.otherAddDialogVisible = true
+        this.showModal = true
+    },
     userAdd(){
         this.userAddDialogVisible = true
+        this.showModal = true
     },
     userAddDialogSubmit(){
         let self = this
@@ -256,11 +386,15 @@ export default {
                 account: self.adduserData.account,
                 password: self.adduserData.password,
             })
+            self.adduserData.account = ''
+            self.adduserData.password = ''
             self.userAddDialogVisible = false;
+            self.showModal = false
         })
     },
     productAdd(){
         this.productAddDialogVisible = true
+        this.showModal = true
     },
     productAddDialogSubmit(){
         let self = this
@@ -275,7 +409,12 @@ export default {
                 name: self.addproductData.name,
                 unitPrice: self.addproductData.unitPrice,
             })
+            self.addproductData.brand = ''
+            self.addproductData.category = ''
+            self.addproductData.name = ''
+            self.addproductData.unitPrice = ''
             self.productAddDialogVisible = false;
+            self.showModal = false
         })
     },
     goMain(){

@@ -35,4 +35,15 @@ class Migration(migrations.Migration):
                 'db_table': 'Product',
             },
         ),
+        migrations.CreateModel(
+            name='Other',
+            fields=[
+                ('id', models.IntegerField(blank=True, db_column='id', primary_key=True, serialize=False, unique=True)),
+                ('name', models.TextField(blank=True)),
+                ('unitPrice', models.TextField(blank=True)),
+            ],
+            options={
+                'db_table': 'Other',
+            },
+        ),
     ]

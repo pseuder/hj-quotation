@@ -7,7 +7,7 @@ import os
 
 database = sqlite3.connect("db.sqlite3")
 cursor = database.cursor()
-tables = ['User','Product']  ##database內的表格名稱
+tables = ['User','Product', 'Other']  ##database內的表格名稱
 
 if not os.path.isdir("./csv"):
     os.mkdir("./csv")

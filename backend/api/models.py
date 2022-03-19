@@ -22,3 +22,13 @@ class Product(models.Model):
 
     def __str__(self):
         return self.id
+
+class Other(models.Model):
+    id = models.IntegerField(db_column='id', unique=True, blank=True, null=False, primary_key=True)
+    name = models.TextField(blank=True, null=False)
+    unitPrice = models.TextField(blank=True, null=False)
+    class Meta:
+        db_table = 'Other'
+
+    def __str__(self):
+        return self.id

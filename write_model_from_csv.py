@@ -4,7 +4,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.dev")
 django.setup()
 # -------------------------------------------------------------------------
-from backend.api.models import User, Product
+from backend.api.models import User, Product, Other
 import csv
 
 with open('./csv/User.csv', newline='', encoding='utf-8') as csvfile:
@@ -26,4 +26,13 @@ with open('./csv/Product.csv', newline='', encoding='utf-8') as csvfile:
             category = row[2],
             name = row[3],
             unitPrice = row[4]
+        )
+
+with open('./csv/Other.csv', newline='', encoding='utf-8') as csvfile:
+    my_csv_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+    for row in my_csv_reader:
+        Other.objects.create(
+            id = row[0],
+            name = row[1],
+            unitPrice = row[2]
         )

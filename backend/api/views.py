@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User, Product
+from .models import User, Product, Other
 import json, sys
 sys.path.append("..")
 
@@ -23,6 +23,13 @@ def getProduct(request):
         products = Product.objects.all()
         products = [{'id': product.id, 'brand': product.brand, 'category': product.category, 'name': product.name, 'unitPrice': product.unitPrice} for product in products]
         return HttpResponse(json.dumps(products))
+
+@csrf_exempt
+def getOther(request):
+    if request.method == 'GET':
+        others = Other.objects.all()
+        others = [{'id': other.id, 'name': other.name, 'unitPrice': other.unitPrice} for other in others]
+        return HttpResponse(json.dumps(others))
 
 @csrf_exempt
 def getDatabaseTable(request):
@@ -79,6 +86,26 @@ def deleteProduct(request):
         Product.objects.get(id=id).delete()
         return HttpResponse('success')
 
+
+@csrf_exempt
+def editOther(request):
+    '''編輯其他資料'''
+    if request.method == 'POST':
+        editotherData = json.loads(request.body)['editotherData']
+        other = Other.objects.get(id=editotherData['id'])
+        other.name = editotherData['name']
+        other.unitPrice = editotherData['unitPrice']
+        other.save()
+        return HttpResponse('success')
+
+@csrf_exempt
+def deleteOther(request):
+    '''刪除其他資料'''
+    if request.method == 'POST':
+        id = json.loads(request.body)['id']
+        Other.objects.get(id=id).delete()
+        return HttpResponse('success')
+
 @csrf_exempt
 def addUser(request):
     '''新增使用者資料'''
@@ -96,3 +123,12 @@ def addProduct(request):
         Product.objects.create(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice'])
         newProductID = Product.objects.get(brand=addproductData['brand'], category=addproductData['category'], name=addproductData['name'], unitPrice=addproductData['unitPrice']).id
         return HttpResponse(newProductID)
+
+@csrf_exempt
+def addOther(request):
+    '''新增其他資料'''
+    if request.method == 'POST':
+        addotherData = json.loads(request.body)['addotherData']
+        Other.objects.create(name=addotherData['name'], unitPrice=addotherData['unitPrice'])
+        newOtherID = Other.objects.get(name=addotherData['name'], unitPrice=addotherData['unitPrice']).id
+        return HttpResponse(newOtherID)

@@ -47,6 +47,17 @@
 /deep/ .content-wrapper{
     margin: 0 auto;
 }
+.myModal{
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    filter: blur(10px);
+    z-index: 10;
+    background: lightgray;
+    top: 6px;
+    right: 96px;
+    opacity: 0.5;
+}
 
 </style>
 
@@ -56,6 +67,7 @@
 
 <template>
 <div style="width: 90%; margin: auto auto">
+    <div  v-if="showModal" class="myModal"></div>
     <el-tabs type="border-card" v-model="tabsValue" >
         <el-tab-pane label="設定" name="setting">
             <span slot="label"><i class="el-icon-setting"></i> 設定</span>
@@ -175,7 +187,7 @@
         <el-tab-pane label="完成" name="finish">
             <div class="tab-body">
                 <div :style="{'height':finishDivHeight, 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
-                    <div style="height: 85%">
+                    <div style="height: 87%">
                         <div style="" class="basic-info">
                             <div style="text-align:center; font-size: 35px;">報   價   單</div>
                             <div style="" class="toLeft">{{companyForm.name}}</div>
@@ -255,14 +267,14 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="height: 150px">
-                        <div style="" class="toLeft toFlex basic-info">
-                            <div :style="{'line-height':finishSignLineHeight, 'width': '25%'}">和進電器水電行:</div>
+                    <div style="height: 13%">
+                        <div style="height:100%; " class="toLeft toFlex basic-info">
+                            <div :style="{'margin':'auto', 'width': '25%'}">和進電器水電行:</div>
                             <div style="width: 25%;"></div>
-                            <div :style="{'line-height':finishSignLineHeight, 'width': '20%'}">客戶簽名:</div>
+                            <div :style="{'margin':'auto', 'width': '20%'}">客戶簽名:</div>
                             <div style="width: 30%;">
-                                <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true" />
-                                <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true" />
+                                <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true; showModal=false" />
+                                <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true; showModal=false" />
                             </div>
                         </div>
                     </div>
@@ -275,8 +287,8 @@
         </el-tab-pane>
     </el-tabs>
     
-    <el-dialog title="選擇空調設備規格" :visible.sync="specificationDialogVisible" :close-on-click-modal="false" :modal="false">
-        <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
+    <el-dialog title="選擇空調設備規格" :visible.sync="specificationDialogVisible" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false"  :show-close="false">
+        <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;" ref="specificationDialog">
             <el-form :model="addSpecificationForm" >
                 <el-form-item label="品牌">
                     <el-select v-model="addSpecificationValue.brand" placeholder="選擇品牌" style="width:100%" @change="selectChange('brand')">
@@ -324,16 +336,23 @@
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button type="warning" plain @click="openSpecificationDialog">清空</el-button>
-            <el-button type="primary" plain @click="specificationDialogVisible = false">取 消</el-button>
+            <el-button type="primary" plain @click="specificationDialogVisible=false; showModal=false">取 消</el-button>
             <el-button type="primary" @click="addService">確 定</el-button>
         </span>
     </el-dialog>
 
-    <el-dialog title="輸入其他服務" :visible.sync="otherDialogVisible" :close-on-click-modal="false" :modal="false">
+    <el-dialog title="輸入其他服務" :visible.sync="otherDialogVisible" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
             <el-form :model="addOtherValue" >
                 <el-form-item label="服務名稱">
-                    <el-input v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
+                    <div style="display:flex; width:100%">
+                        <el-select style="width:50%" v-model="addOtherValue.specification" placeholder="選擇服務名稱" @change="addOtherSelectChange">
+                            <el-option v-for="item in addOtherOption" :key="item.name" :label="item.name" :value="item.name">
+                            </el-option>
+                        </el-select>
+                        或
+                        <el-input style="width:50%" v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
+                    </div>
                 </el-form-item>
                 <el-form-item label="數量">
                     <el-input v-model="addOtherValue.number" placeholder="輸入數量"></el-input>
@@ -351,12 +370,12 @@
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button type="warning" plain @click="openOtherDialog">清空</el-button>
-            <el-button type="primary" plain @click="otherDialogVisible = false">取 消</el-button>
+            <el-button type="primary" plain @click="otherDialogVisible = false; showModal=false">取 消</el-button>
             <el-button type="primary" @click="addOther">確 定</el-button>
         </span>
     </el-dialog>
 
-    <el-dialog title="客戶簽名" :visible.sync="signCanvasVisible" :close-on-click-modal="false" width="80%" :modal="false">
+    <el-dialog title="客戶簽名" :visible.sync="signCanvasVisible" :close-on-click-modal="false" width="80%" :modal="false" :close-on-press-escape="false" :show-close="false">
         <div>
             <vue-esign 
                 ref="esign" 
@@ -370,7 +389,7 @@
             />
             <div style="margin-top:20px; text-align:right">
                 <el-button type="warning" plain @click="$refs.esign.reset()">清除</el-button>
-                <el-button type="primary" plain @click="signCanvasVisible=false">取消</el-button>
+                <el-button type="primary" plain @click="signCanvasVisible=false; showModal=false">取消</el-button>
                 <el-button type="primary" @click="handleGenerate">確定</el-button>
             </div>
         </div>
@@ -542,6 +561,7 @@ export default {
             },
             otherTable:[],
             otherDialogVisible: false,
+            addOtherOption:[],
             addOtherValue:{
                 specification:'',
                 number:'1',
@@ -554,7 +574,7 @@ export default {
             signCanvasVisible: false,
 
             name: 'Vue.js',
-            showLayout: false,
+            showModal: false,
         }
   },
   created(){
@@ -576,6 +596,12 @@ export default {
             })
             self.addSpecificationOption.brand = [...brandSet];
         })
+
+        this.axios.get('getOther')
+        .then((response)=>{
+            self.addOtherOption = response.data
+        })
+
         this.clientForm.date = new Date();
 
         let ua = navigator.userAgent;
@@ -680,6 +706,12 @@ export default {
         this.addSpecificationOption.category = [];
         this.addSpecificationOption.name = [];
         this.specificationDialogVisible = true;
+        this.showModal = true;
+        let self = this
+        setTimeout(() => {
+            self.$refs.specificationDialog.scrollTop=0
+        }, 50);
+        
     },
     addService(){
         let fullSpecification = this.addSpecificationValue.brand + this.addSpecificationValue.category + this.addSpecificationValue.name;
@@ -693,6 +725,7 @@ export default {
             remark: this.addSpecificationValue.remark,
         })
         this.specificationDialogVisible = false;
+        this.showModal=false
     },
     handleGenerate () {
         let self = this;
@@ -736,6 +769,7 @@ export default {
         this.addOtherValue.unit = '';
         this.addOtherValue.unitPrice = '0';
         this.addOtherValue.remark = '';
+        this.showModal=true
         this.otherDialogVisible = true;
     },
     addOther(){
@@ -749,6 +783,15 @@ export default {
             remark: this.addOtherValue.remark,
         })
         this.otherDialogVisible = false;
+        this.showModal=false
+    },
+    addOtherSelectChange(){
+        let self = this;
+        this.addOtherOption.forEach(function(item){
+            if(item.name == self.addOtherValue.specification){
+                self.addOtherValue.unitPrice = item.unitPrice;
+            }
+        })
     },
     clearOtherTable(){
         this.otherTable = [];
