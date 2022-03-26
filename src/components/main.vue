@@ -59,6 +59,18 @@
     opacity: .5;
 }
 
+.watermark{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #d3d3d3;
+    opacity: .2;
+    background: url('../assets/watermark.png') left top repeat;
+    z-index: 0;
+}
+
 </style>
 
 <style>
@@ -187,100 +199,126 @@
             </div>
             <div class="tab-footer">
                 <el-button type="primary" @click="changeTab('service')" plain>上一步</el-button>
+                <el-button type="primary" @click="changeTab('attachment')">下一步</el-button>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="附件" name="attachment">
+            <div class="tab-body">
+            </div>
+            <div class="tab-footer">
+                <el-button type="primary" @click="changeTab('other')" plain>上一步</el-button>
                 <el-button type="primary" @click="changeTab('finish')">下一步</el-button>
             </div>
         </el-tab-pane>
+
         <el-tab-pane label="完成" name="finish">
             <div class="tab-body">
-                <div :style="{'height':'auto', 'width':' 96%', 'max-width':' 675px', 'border':' black double 6px', 'margin':' auto'}">
-                    <div style="">
-                        <div style="" class="basic-info">
-                            <div style="text-align:center; font-size: 35px;">報   價   單</div>
-                            <div style="" class="toLeft">{{companyForm.name}}</div>
-                            <div style="" class="toLeft">{{companyForm.address}}</div>
-                            <div style="" class="toFlex">
-                                <div style="">TEL：{{companyForm.telephone}}</div>
-                                <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
+                
+                <div style="height:auto; width: 96%; max-width: 675px; border: black double 6px; margin: auto">
+                    <div style="position:relative">
+                        <div class="watermark" />
+                        <div>
+                            <div style="" class="basic-info">
+                                <div style="text-align:center; font-size: 35px;">報   價   單</div>
+                                <div style="" class="toLeft">{{companyForm.name}}</div>
+                                <div style="" class="toLeft">{{companyForm.address}}</div>
+                                <div style="" class="toFlex">
+                                    <div style="">TEL：{{companyForm.telephone}}</div>
+                                    <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
+                                </div>
+                                <br>
+                                <div style="" class="toFlex">
+                                    <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
+                                    <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
+                                </div>
+                                <div style="" class="toFlex">
+                                    <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
+                                    <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
+                                </div>
+                                <div style="" class="toLeft">地址：{{clientForm.address}}</div>
+                                <div style="" class="toLeft">Email：{{clientForm.email}}</div>
                             </div>
-                            <br>
-                            <div style="" class="toFlex">
-                                <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
-                                <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
-                            </div>
-                            <div style="" class="toFlex">
-                                <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
-                                <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
-                            </div>
-                            <div style="" class="toLeft">地址：{{clientForm.address}}</div>
-                            <div style="" class="toLeft">Email：{{clientForm.email}}</div>
+                            <table border style="border-collapse:collapse; width:100%; font-family: PMingLiU;">
+                                <tr style="">
+                                    <th width="45%" class="table-td">品名</th>
+                                    <th width="6%"  class="table-td">數量</th>
+                                    <th width="6%"  class="table-td">單位</th>
+                                    <th width="13%" class="table-td">單價</th>
+                                    <th width="13%" class="table-td">金額</th>
+                                    <th width="17%" class="table-td">備註</th>
+                                </tr>
+                                <tr v-for="item in serviceTable" :key="item">
+                                    <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                                    <td style="max-width: 13%; text-align:right;" class="table-td">
+                                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                                    </td>
+                                    <td style="max-width: 13%; text-align:right;" class="table-td">
+                                        <div style="margin-right: 4px;">${{item.price}}</div>
+                                    </td>
+                                    <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                                </tr>
+                                <tr v-for="item in otherTable" :key="item">
+                                    <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                                    <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                                    <td style="max-width: 13%; text-align:right;" class="table-td">
+                                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                                    </td>
+                                    <td style="max-width: 13%; text-align:right;" class="table-td">
+                                        <div style="margin-right: 4px;">${{item.price}}</div>
+                                    </td>
+                                    <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                                </tr>
+                                <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
+                                    <td v-for="item of 6" :key="item" class="table-td"></td>
+                                </tr>
+                                <tr>
+                                    <td class="toLeft table-td">
+                                        <div style="display:flex">
+                                            <div style="width: 40%; margin: auto;">施工日期:</div>
+                                            <el-input v-model="constructionDate"></el-input>
+                                        </div>
+                                    </td>
+                                    <td v-for="item of 5" :key="item" class="table-td"></td>
+                                </tr>
+                                <tr>
+                                    <td v-for="item of 6" :key="item" class="table-td"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" class="toLeft table-td">
+                                        <div style="display:flex">
+                                            <div style="width:30%; display:flex">
+                                                <div style="width: 24%; margin: auto;">訂金:</div>
+                                                <el-input v-model="deposit" style="margin: auto;" />
+                                            </div>
+                                            <div style="width:40%; display:flex">
+                                                <div style="width: 48%; margin: auto;">機器設備款:</div>
+                                                <el-input v-model="machineEquipment" style="margin: auto;" />
+                                            </div>
+                                            <div style="width:30%; display:flex">
+                                                <div style="width: 37%; margin: auto;">完成款:</div>
+                                                <el-input v-model="completedPayment" style="margin: auto;" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
+                                    <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
+                                </tr>
+                            </table>
                         </div>
-                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; letter-spacing: 32px; text-align: center;" class="basic-info">
-                            國際分離式變頻空調工程
-                        </div>
-                        <table border style="border-collapse:collapse; width:100%; font-family: PMingLiU;">
-                            <tr style="">
-                                <th width="45%">空調設備規格</th>
-                                <th width="6%">數量</th>
-                                <th width="6%">單位</th>
-                                <th width="13%">單價</th>
-                                <th width="13%">金額</th>
-                                <th width="17%">備註</th>
-                            </tr>
-                            <tr v-for="item in serviceTable" :key="item">
-                                <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
-                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
-                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
-                                <td style="max-width: 13%; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.unitPrice}}</div>
-                                </td>
-                                <td style="max-width: 13%; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.price}}</div>
-                                </td>
-                                <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
-                            </tr>
-                            <tr v-for="item in otherTable" :key="item">
-                                <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
-                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
-                                <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
-                                <td style="max-width: 13%; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.unitPrice}}</div>
-                                </td>
-                                <td style="max-width: 13%; text-align:right;" class="table-td">
-                                    <div style="margin-right: 4px;">${{item.price}}</div>
-                                </td>
-                                <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
-                            </tr>
-                            <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
-                                <td v-for="item of 6" :key="item" class="table-td"></td>
-                            </tr>
-                            <tr>
-                                <td class="toLeft table-td">施工日期:</td>
-                                <td v-for="item of 5" :key="item" class="table-td"></td>
-                            </tr>
-                            <tr>
-                                <td v-for="item of 6" :key="item" class="table-td"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="6" class="toLeft table-td">
-                                    <span style="margin-right: 15%;">訂金:</span>
-                                    <span style="margin-right: 15%;">機器設備款:</span>
-                                    <span>完成款:</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
-                                <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div style="height: 100px">
-                        <div style="height:100%; " class="toLeft toFlex basic-info">
-                            <div :style="{'margin':'auto', 'width': '25%'}">和進電器水電行:</div>
-                            <div style="width: 25%;"></div>
-                            <div :style="{'margin':'auto', 'width': '20%'}">客戶簽名:</div>
-                            <div style="width: 30%;">
-                                <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true; showModal=false" />
-                                <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true; showModal=false" />
+                        <div style="height: 100px">
+                            <div style="height:100%; " class="toLeft toFlex basic-info">
+                                <div style="margin:auto; width: 25%">和進電器水電行:</div>
+                                <div style="width: 25%;"></div>
+                                <div style="margin:auto; width: 20%">客戶簽名:</div>
+                                <div style="width: 30%; z-index: 2;">
+                                    <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true; showModal=false" />
+                                    <img v-else :src=clientSignImg style="width: 100%; height: 98%;" @click="signCanvasVisible=true; showModal=false" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -330,7 +368,14 @@
                     <el-input v-model="addSpecificationValue.number" placeholder="輸入數量"></el-input>
                 </el-form-item>
                 <el-form-item label="單位">
-                    <el-input v-model="addSpecificationValue.unit" placeholder="輸入單位"></el-input>
+                    <el-select v-model="addSpecificationValue.unit" placeholder="選擇單位" style="width: 100%;">
+                        <el-option v-for="item in defaultUnit" :key="item" :label="item" :value="item" >
+                            <div v-if="item=='other'" @click.stop="">
+                                <span>自訂單位：</span>
+                                <input v-model="addSpecificationValue.unit" placeholder="輸入單位" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
+                            </div>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="單價">
                     <el-input v-model="addSpecificationValue.unitPrice" placeholder="輸入單價"></el-input>
@@ -351,19 +396,27 @@
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
             <el-form :model="addOtherValue" >
                 <el-form-item label="選擇服務名稱">
-                    <el-select style="width:100%" v-model="addOtherValue.specification" placeholder="選擇服務名稱" @change="addOtherSelectChange">
+                    <el-select v-model="addOtherValue.specification" placeholder="服務名稱" style="width: 100%;">
                         <el-option v-for="item in addOtherOption" :key="item.name" :label="item.name" :value="item.name">
+                            <div v-if="item.name=='other'" @click.stop="">
+                                <span>自訂服務名稱：</span>
+                                <input v-model="addOtherValue.specification" placeholder="輸入服務名稱" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
+                            </div>
                         </el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item label="輸入服務名稱">
-                    <el-input v-model="addOtherValue.specification" placeholder="輸入服務名稱"></el-input>
                 </el-form-item>
                 <el-form-item label="數量">
                     <el-input v-model="addOtherValue.number" placeholder="輸入數量"></el-input>
                 </el-form-item>
                 <el-form-item label="單位">
-                    <el-input v-model="addOtherValue.unit" placeholder="輸入單位"></el-input>
+                    <el-select v-model="addOtherValue.unit" placeholder="選擇單位" style="width: 100%;">
+                        <el-option v-for="item in defaultUnit" :key="item" :label="item" :value="item" >
+                            <div v-if="item=='other'" @click.stop="">
+                                <span>自訂單位：</span>
+                                <input v-model="addOtherValue.unit" placeholder="輸入單位" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
+                            </div>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="單價">
                     <el-input v-model="addOtherValue.unitPrice" placeholder="輸入單價"></el-input>
@@ -421,94 +474,110 @@
         @hasGenerated="hasGenerated($event)"
         ref="html2Pdf"
         id="html2Pdf"
-        style="display: none;">
+        style="display:none">
     >
     <section slot="pdf-content">
-        <div :style="{'height':finishDivHeight, 'width':'750px', 'border':' black double 6px', 'margin':'20px 20px'}">
-            <div style="" class="basic-info">
-                <div style="text-align:center; font-size: 35px;">報   價   單</div>
-                <div style="" class="toLeft">{{companyForm.name}}</div>
-                <div style="" class="toLeft">{{companyForm.address}}</div>
-                <div style="" class="toFlex">
-                    <div style="">TEL：{{companyForm.telephone}}</div>
-                    <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
+        <div style="height:auto; width: 96%; max-width: 675px; border: black double 6px; margin: 20px auto">
+            <div style="position:relative">
+                <div class="watermark" />
+                <div>
+                    <div style="" class="basic-info">
+                        <br>
+                        <div style="text-align:center; font-size: 35px;">報   價   單</div>
+                        <div style="" class="toLeft">{{companyForm.name}}</div>
+                        <div style="" class="toLeft">{{companyForm.address}}</div>
+                        <div style="" class="toFlex">
+                            <div style="">TEL：{{companyForm.telephone}}</div>
+                            <div style="margin-left:20px">FAX：{{companyForm.fax}}</div>
+                        </div>
+                        <br>
+                        <div style="" class="toFlex">
+                            <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
+                            <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
+                        </div>
+                        <div style="" class="toFlex">
+                            <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
+                            <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
+                        </div>
+                        <div style="" class="toLeft">地址：{{clientForm.address}}</div>
+                        <div style="" class="toLeft">Email：{{clientForm.email}}</div>
+                    </div>
+                    <table border style="border-collapse:collapse; width:100%; font-family: PMingLiU;">
+                        <tr style="">
+                            <th width="45%" class="table-td">品名</th>
+                            <th width="6%"  class="table-td">數量</th>
+                            <th width="6%"  class="table-td">單位</th>
+                            <th width="13%" class="table-td">單價</th>
+                            <th width="13%" class="table-td">金額</th>
+                            <th width="17%" class="table-td">備註</th>
+                        </tr>
+                        <tr v-for="item in serviceTable" :key="item">
+                            <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                            <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                            <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                            <td style="max-width: 13%; text-align:right;" class="table-td">
+                                <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                            </td>
+                            <td style="max-width: 13%; text-align:right;" class="table-td">
+                                <div style="margin-right: 4px;">${{item.price}}</div>
+                            </td>
+                            <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                        </tr>
+                        <tr v-for="item in otherTable" :key="item">
+                            <td style="max-width: 45%; text-align:left;" class="table-td">{{item.specification}}</td>
+                            <td style="max-width: 6%; text-align:center;" class="table-td">{{item.number}}</td>
+                            <td style="max-width: 6%; text-align:center;" class="table-td">{{item.unit}}</td>
+                            <td style="max-width: 13%; text-align:right;" class="table-td">
+                                <div style="margin-right: 4px;">${{item.unitPrice}}</div>
+                            </td>
+                            <td style="max-width: 13%; text-align:right;" class="table-td">
+                                <div style="margin-right: 4px;">${{item.price}}</div>
+                            </td>
+                            <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
+                        </tr>
+                        <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
+                            <td v-for="item of 6" :key="item" class="table-td"></td>
+                        </tr>
+                        <tr>
+                            <td class="toLeft table-td">
+                                施工日期：{{constructionDate}}
+                            </td>
+                            <td v-for="item of 5" :key="item" class="table-td"></td>
+                        </tr>
+                        <tr>
+                            <td v-for="item of 6" :key="item" class="table-td"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="toLeft table-td">
+                                <div style="display:flex">
+                                    <div style="width:30%;">
+                                        訂金：{{deposit}}
+                                    </div>
+                                    <div style="width:40%;">
+                                        機器設備款：{{machineEquipment}}
+                                    </div>
+                                    <div style="width:30%;">
+                                        完成款：{{completedPayment}}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
+                            <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
+                        </tr>
+                    </table>
                 </div>
-                <br>
-                <div style="" class="toFlex">
-                    <div style="width:60%" class="toLeft">客戶名稱：{{clientForm.name}}</div>
-                    <div style="" class="toLeft">日期：{{clientForm.date.toLocaleDateString()}}</div>
-                </div>
-                <div style="" class="toFlex">
-                    <div style="width:60%" class="toLeft">聯絡電話：{{clientForm.telephone}}</div>
-                    <div style="" class="toLeft">傳真：{{clientForm.fax}}</div>
-                </div>
-                <div style="" class="toLeft">地址：{{clientForm.address}}</div>
-                <div style="" class="toLeft">Email：{{clientForm.email}}</div>
-            </div>
-            <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; letter-spacing: 32px; text-align: center;" class="basic-info">
-                國際分離式變頻空調工程
-            </div>
-            <table border style="border-collapse:collapse; width:750px; font-family: PMingLiU;">
-                <tr style="">
-                    <th width="350px">空調設備規格</th>
-                    <th width="40px">數量</th>
-                    <th width="40px">單位</th>
-                    <th width="100px">單價</th>
-                    <th width="100px">金額</th>
-                    <th width="120px">備註</th>
-                </tr>
-                <tr v-for="item in serviceTable" :key="item">
-                    <td style="max-width: 365px; text-align:left;" class="table-td">{{item.specification}}</td>
-                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.number}}</td>
-                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.unit}}</td>
-                    <td style="max-width: 100px; text-align:right;" class="table-td">
-                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
-                    </td>
-                    <td style="max-width: 100px; text-align:right;" class="table-td">
-                        <div style="margin-right: 4px;">${{item.price}}</div>
-                    </td>
-                    <td style="max-width: 165px; text-align:center;" class="table-td">{{item.remark}}</td>
-                </tr>
-                <tr v-for="item in otherTable" :key="item">
-                    <td style="max-width: 365px; text-align:left;" class="table-td">{{item.specification}}</td>
-                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.number}}</td>
-                    <td style="max-width: 40px; text-align:center;" class="table-td">{{item.unit}}</td>
-                    <td style="max-width: 100px; text-align:right;" class="table-td">
-                        <div style="margin-right: 4px;">${{item.unitPrice}}</div>
-                    </td>
-                    <td style="max-width: 100px; text-align:right;" class="table-td">
-                        <div style="margin-right: 4px;">${{item.price}}</div>
-                    </td>
-                    <td style="max-width: 165px; text-align:center;" class="table-td">{{item.remark}}</td>
-                </tr>
-                <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
-                    <td v-for="item of 6" :key="item" class="table-td"></td>
-                </tr>
-                <tr>
-                    <td class="toLeft table-td">施工日期:</td>
-                    <td v-for="item of 5" :key="item" class="table-td"></td>
-                </tr>
-                <tr>
-                    <td v-for="item of 6" :key="item" class="table-td"></td>
-                </tr>
-                <tr>
-                    <td colspan="6" class="toLeft table-td">
-                        <span style="margin-right: 200px;">訂金:</span>
-                        <span style="margin-right: 200px;">機器設備款:</span>
-                        <span>完成款:</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="letter-spacing: 32px; text-align:center" class="table-td">合計</td>
-                    <td colspan="5" style="text-align:center" class="table-td">${{allPrice}}</td>
-                </tr>
-            </table>
-            <div style="" class="toLeft toFlex basic-info">
-                <div style="line-height: 145px; width: 400px;">和進電器水電行:</div>
-                <div style="line-height: 145px;" class="toFlex">
-                    <div>客戶簽名:</div>
-                    <div v-if="clientSignImg==''" style="width: 275px; height: 80%;"  @click="signCanvasVisible=true" />
-                    <img v-else :src=clientSignImg style="width: 275px; height: 80%;" @click="signCanvasVisible=true" />
+                <div style="height: 100px">
+                    <div style="height:100%; " class="toLeft toFlex basic-info">
+                        <div style="margin:auto; width: 25%">和進電器水電行:</div>
+                        <div style="width: 25%;"></div>
+                        <div style="margin:auto; width: 20%">客戶簽名:</div>
+                        <div style="width: 30%;">
+                            <div v-if="clientSignImg==''" style="width: 100%; height: 98%;" />
+                            <img v-else :src=clientSignImg style="width: 100%; height: 98%;" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -529,9 +598,7 @@ export default {
     VueHtml2pdf
   },
   data: function() {
-        return { 
-            finishDivHeight: '1000px',
-            finishSignLineHeight: '150px',
+        return {
             tabsValue:'basic',
             companyForm:{
                 name:'和進電器水電行',
@@ -579,6 +646,11 @@ export default {
 
             name: 'Vue.js',
             showModal: false,
+            constructionDate: '',
+            deposit: '',
+            machineEquipment: '',
+            completedPayment: '',
+            defaultUnit: ['米', '尺', '個', '式', '組', 'other'],
         }
   },
   created(){
@@ -604,28 +676,12 @@ export default {
         this.axios.get('getOther')
         .then((response)=>{
             self.addOtherOption = response.data
+            self.addOtherOption.push({name:'other'})
         })
 
         this.clientForm.date = new Date();
 
-        let ua = navigator.userAgent;
-        let Agents = ["Android", "iPhone",
-            "SymbianOS", "Windows Phone",
-            "iPad", "iPod"];
 
-        if (ua.indexOf("iPad") > 0) {
-            this.finishDivHeight = '1050px';
-        }
-        else if (ua.indexOf("iPhone") > 0) {
-            this.finishDivHeight = '1050px';
-            this.finishSignLineHeight = '85px';
-        }
-        else if (ua.indexOf("SymbianOS") > 0) {
-        }
-        else if (ua.indexOf("Windows Phone") > 0) {
-        }
-        else if (ua.indexOf("Android") > 0) {
-        }
     }
   },
   computed: {
@@ -666,6 +722,9 @@ export default {
     },
     deleteService(index, row){
         this.serviceTable.splice(index, 1)
+    },
+    deleteOther(index, row){
+        this.otherTable.splice(index, 1)
     },
     selectChange(source){
         if(source == 'brand'){
