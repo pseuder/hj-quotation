@@ -396,7 +396,7 @@
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
             <el-form :model="addOtherValue" >
                 <el-form-item label="選擇服務名稱">
-                    <el-select v-model="addOtherValue.specification" placeholder="服務名稱" style="width: 100%;">
+                    <el-select v-model="addOtherValue.specification" placeholder="服務名稱" style="width: 100%;" @change="selectChange('service')">
                         <el-option v-for="item in addOtherOption" :key="item.name" :label="item.name" :value="item.name">
                             <div v-if="item.name=='other'" @click.stop="">
                                 <span>自訂服務名稱：</span>
@@ -677,6 +677,7 @@ export default {
         .then((response)=>{
             self.addOtherOption = response.data
             self.addOtherOption.push({name:'other'})
+            console.log(self.addOtherOption)
         })
 
         this.clientForm.date = new Date();
@@ -756,6 +757,13 @@ export default {
                 return item.brand == self.addSpecificationValue.brand && item.category == self.addSpecificationValue.category && item.name == self.addSpecificationValue.name;
             })
             self.addSpecificationValue.unitPrice = product.unitPrice;
+        }
+        else if(source == 'service'){
+            let self = this;
+            let product = self.addOtherOption.find(function(item){
+                return item.name == self.addOtherValue.specification;
+            })
+            self.addOtherValue.unitPrice = product.unitPrice;
         }
     },
     openSpecificationDialog(){
