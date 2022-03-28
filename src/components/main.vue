@@ -599,7 +599,7 @@
                 <div style="height: 100px">
                     <div style="height:100%; " class="toLeft toFlex basic-info">
                         <div style="margin:auto; width: 25%">和進電器水電行:</div>
-                        <div style="width: 25%;"></div>
+                        <div style="width: 25%;" class="watermark"></div>
                         <div style="margin:auto; width: 20%">客戶簽名:</div>
                         <div style="width: 30%;">
                             <div v-if="clientSignImg==''" style="width: 100%; height: 98%;" />
