@@ -60,15 +60,8 @@
 }
 
 .watermark{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #d3d3d3;
-    opacity: .2;
-    background: url('../assets/watermark.png') left top repeat;
-    z-index: 0;
+    background-size: contain !important;;
+    background: url('../assets/watermark.png') no-repeat;
 }
 
 </style>
@@ -204,6 +197,20 @@
         </el-tab-pane>
         <el-tab-pane label="附件" name="attachment">
             <div class="tab-body">
+                <div style="text-align: left; font-size: 28px;">
+                    新增附件
+                    <el-button type="info" style="font-size: 18px; padding: 3px;" icon="el-icon-brush" circle @click="clearAttachmentTable" size="small"></el-button>
+                </div>
+                <el-table :data="attachmentTable" empty-text="尚無資料">
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteAttachment(scope.$index, scope.row)"></el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="附件名稱" prop="name"></el-table-column>
+                    <el-table-column label="備註" prop="remark"></el-table-column>
+                </el-table>
+                <el-button type="warning" icon="el-icon-plus" circle @click="openAttachmentDialog"></el-button>
             </div>
             <div class="tab-footer">
                 <el-button type="primary" @click="changeTab('other')" plain>上一步</el-button>
@@ -216,7 +223,6 @@
                 
                 <div style="height:auto; width: 96%; max-width: 675px; border: black double 6px; margin: auto">
                     <div style="position:relative">
-                        <div class="watermark" />
                         <div>
                             <div style="" class="basic-info">
                                 <div style="text-align:center; font-size: 35px;">報   價   單</div>
@@ -271,7 +277,11 @@
                                     </td>
                                     <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
                                 </tr>
-                                <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
+                                <tr v-for="item in attachmentTable" :key="item">
+                                    <td style="text-align:left;" class="table-td" colspan="5">{{item.name}}</td>
+                                    <td style="text-align:left;" class="table-td" >{{item.remark}}</td>
+                                </tr>
+                                <tr v-for="item of 11-(serviceTable.length+otherTable.length+attachmentTable.length)" :key="item">
                                     <td v-for="item of 6" :key="item" class="table-td"></td>
                                 </tr>
                                 <tr>
@@ -282,9 +292,6 @@
                                         </div>
                                     </td>
                                     <td v-for="item of 5" :key="item" class="table-td"></td>
-                                </tr>
-                                <tr>
-                                    <td v-for="item of 6" :key="item" class="table-td"></td>
                                 </tr>
                                 <tr>
                                     <td colspan="6" class="toLeft table-td">
@@ -313,7 +320,7 @@
                         <div style="height: 100px">
                             <div style="height:100%; " class="toLeft toFlex basic-info">
                                 <div style="margin:auto; width: 25%">和進電器水電行:</div>
-                                <div style="width: 25%;"></div>
+                                <div style="width: 25%;" class="watermark"></div>
                                 <div style="margin:auto; width: 20%">客戶簽名:</div>
                                 <div style="width: 30%; z-index: 2;">
                                     <div v-if="clientSignImg==''" style="width: 100%; height: 98%;"  @click="signCanvasVisible=true; showModal=false" />
@@ -433,6 +440,23 @@
         </span>
     </el-dialog>
 
+    <el-dialog title="輸入附件" :visible.sync="attachmentDialogVisible" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+        <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
+            <el-form :model="addSpecificationForm" >
+                <el-form-item label="附件名稱">
+                    <el-input v-model="addAttachValue.name"  />
+                </el-form-item>
+                <el-form-item label="附件備註">
+                    <el-input v-model="addAttachValue.remark"  />
+                </el-form-item>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="warning" plain @click="openAttachmentDialog">清空</el-button>
+            <el-button type="primary" plain @click="attachmentDialogVisible = false; showModal=false">取 消</el-button>
+            <el-button type="primary" @click="addAttach">確 定</el-button>
+        </span>
+    </el-dialog>
+
     <el-dialog title="客戶簽名" :visible.sync="signCanvasVisible" :close-on-click-modal="false" width="80%" :modal="false" :close-on-press-escape="false" :show-close="false">
         <div>
             <vue-esign 
@@ -452,6 +476,9 @@
             </div>
         </div>
     </el-dialog>
+
+
+
 
 
 
@@ -535,7 +562,11 @@
                             </td>
                             <td style="max-width: 17%; text-align:center;" class="table-td">{{item.remark}}</td>
                         </tr>
-                        <tr v-for="item of 10-serviceTable.length-otherTable.length" :key="item">
+                        <tr v-for="item in attachmentTable" :key="item">
+                            <td style="text-align:left;" class="table-td" colspan="5">{{item.name}}</td>
+                            <td style="text-align:left;" class="table-td" >{{item.remark}}</td>
+                        </tr>
+                        <tr v-for="item of 11-(serviceTable.length+otherTable.length+attachmentTable.length)" :key="item">
                             <td v-for="item of 6" :key="item" class="table-td"></td>
                         </tr>
                         <tr>
@@ -543,9 +574,6 @@
                                 施工日期：{{constructionDate}}
                             </td>
                             <td v-for="item of 5" :key="item" class="table-td"></td>
-                        </tr>
-                        <tr>
-                            <td v-for="item of 6" :key="item" class="table-td"></td>
                         </tr>
                         <tr>
                             <td colspan="6" class="toLeft table-td">
@@ -643,6 +671,13 @@ export default {
             allProduct:[],
             clientSignImg: '',
             signCanvasVisible: false,
+
+            attachmentDialogVisible: false,
+            attachmentTable:[],
+            addAttachValue:{
+                name:'',
+                remark:'',
+            },
 
             name: 'Vue.js',
             showModal: false,
@@ -785,8 +820,8 @@ export default {
         
     },
     addService(){
-        if(this.serviceTable.length + this.otherTable.length >= 10){
-            this.$message({message: '服務項目+其他服務不得超過10項!', type: 'warning'})
+        if(this.serviceTable.length + this.otherTable.length + this.attachmentTable.length >= 10){
+            this.$message({message: '服務項目+其他服務+附件不得超過11項!', type: 'warning'})
             return;
         }
         //只能填寫數字
@@ -858,9 +893,33 @@ export default {
         this.showModal=true
         this.otherDialogVisible = true;
     },
+    clearAttachmentTable(){
+        this.attachmentTable = [];
+    },
+    openAttachmentDialog(){
+        this.addAttachValue.name = '';
+        this.addAttachValue.remark = '';
+        this.showModal=true
+        this.attachmentDialogVisible = true;
+    },
+    deleteAttachment(index){
+        this.attachmentTable.splice(index, 1)
+    },
+    addAttach(){
+        if(this.serviceTable.length + this.otherTable.length + this.attachmentTable.length >= 10){
+            this.$message({message: '服務項目+其他服務+附件不得超過11項!', type: 'warning'})
+            return;
+        }
+        this.attachmentTable.push({
+            name: this.addAttachValue.name,
+            remark: this.addAttachValue.remark,
+        })
+        this.attachmentDialogVisible = false;
+        this.showModal=false
+    },
     addOther(){
-        if(this.serviceTable.length + this.otherTable.length >= 10){
-            this.$message({message: '服務項目+其他服務不得超過10項!', type: 'warning'})
+        if(this.serviceTable.length + this.otherTable.length + this.attachmentTable.length >= 10){
+            this.$message({message: '服務項目+其他服務+附件不得超過11項!', type: 'warning'})
             return;
         }
         //只能填寫數字
