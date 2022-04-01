@@ -376,8 +376,8 @@
                 </el-form-item>
                 <el-form-item label="單位">
                     <el-select v-model="addSpecificationValue.unit" placeholder="選擇單位" style="width: 100%;">
-                        <el-option v-for="item in defaultUnit" :key="item" :label="item" :value="item" >
-                            <div v-if="item=='other'" @click.stop="">
+                        <el-option v-for="item in defaultUnit" :key="item.id" :label="item.name" :value="item.name" >
+                            <div v-if="item.name=='other'" @click.stop="">
                                 <span>自訂單位：</span>
                                 <input v-model="addSpecificationValue.unit" placeholder="輸入單位" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
                             </div>
@@ -417,8 +417,8 @@
                 </el-form-item>
                 <el-form-item label="單位">
                     <el-select v-model="addOtherValue.unit" placeholder="選擇單位" style="width: 100%;">
-                        <el-option v-for="item in defaultUnit" :key="item" :label="item" :value="item" >
-                            <div v-if="item=='other'" @click.stop="">
+                        <el-option v-for="item in defaultUnit" :key="item.id" :label="item.name" :value="item.name" >
+                            <div v-if="item.name=='other'" @click.stop="">
                                 <span>自訂單位：</span>
                                 <input v-model="addOtherValue.unit" placeholder="輸入單位" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
                             </div>
@@ -442,13 +442,21 @@
 
     <el-dialog title="輸入附件" :visible.sync="attachmentDialogVisible" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
         <div style="height: 55vh; overflow-y: auto; overflow-x: hidden;">
-            <el-form :model="addSpecificationForm" >
+            <el-form :model="addAttachValue" >
                 <el-form-item label="附件名稱">
-                    <el-input v-model="addAttachValue.name"  />
+                    <el-select v-model="addAttachValue.name" placeholder="服務名稱" style="width: 100%;" @change="selectChange('attachment')">
+                        <el-option v-for="item in addAttachOption" :key="item.name" :label="item.name" :value="item.name">
+                            <div v-if="item.name=='other'" @click.stop="">
+                                <span>自訂附件名稱：</span>
+                                <input v-model="addAttachValue.name" placeholder="輸入附件名稱" style="border-width: 0px 0px 1px 0px; width: 20vw;" />
+                            </div>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="附件備註">
                     <el-input v-model="addAttachValue.remark"  />
                 </el-form-item>
+            </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button type="warning" plain @click="openAttachmentDialog">清空</el-button>
@@ -674,6 +682,7 @@ export default {
 
             attachmentDialogVisible: false,
             attachmentTable:[],
+            addAttachOption:[],
             addAttachValue:{
                 name:'',
                 remark:'',
@@ -685,7 +694,7 @@ export default {
             deposit: '',
             machineEquipment: '',
             completedPayment: '',
-            defaultUnit: ['米', '尺', '個', '式', '組', 'other'],
+            defaultUnit: [],
         }
   },
   created(){
@@ -712,7 +721,17 @@ export default {
         .then((response)=>{
             self.addOtherOption = response.data
             self.addOtherOption.push({name:'other'})
-            console.log(self.addOtherOption)
+        })
+
+        this.axios.get('getAttachment')
+        .then((response)=>{
+            self.addAttachOption = response.data
+            self.addAttachOption.push({name:'other'})
+        })
+
+        this.axios.get('getUnit').then(res => {
+            self.defaultUnit = res.data;
+            self.defaultUnit.push({id:9999, name:'other'})
         })
 
         this.clientForm.date = new Date();
@@ -799,6 +818,13 @@ export default {
                 return item.name == self.addOtherValue.specification;
             })
             self.addOtherValue.unitPrice = product.unitPrice;
+        }
+        else if(source == 'attachment'){
+            let self = this;
+            let product = self.addAttachOption.find(function(item){
+                return item.name == self.addAttachValue.name;
+            })
+            self.addAttachValue.remark = product.remark;
         }
     },
     openSpecificationDialog(){

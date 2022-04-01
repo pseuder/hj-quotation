@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User, Product, Other
+from .models import User, Product, Other, Unit, Attachment
 import json, sys
 sys.path.append("..")
 
@@ -143,3 +143,70 @@ def addOther(request):
     except Exception as e:
         return HttpResponse(e)
 
+@csrf_exempt
+def getUnit(request):
+    '''回傳單位資料'''
+    if request.method == 'GET':
+        units = Unit.objects.all()
+        units = [{'id': unit.id, 'name': unit.name} for unit in units]
+        return HttpResponse(json.dumps(units))
+
+@csrf_exempt
+def addUnit(request):
+    '''新增單位資料'''
+    if request.method == 'POST':
+        addunitData = json.loads(request.body)['addunitData']
+        try:
+            newUnitID = Unit.objects.latest('id').id + 1
+        except Exception as e:
+            newUnitID = 1
+        Unit.objects.create(id=newUnitID, name=addunitData['name'])
+        return HttpResponse(newUnitID)
+
+@csrf_exempt
+def deleteUnit(request):
+    '''刪除單位資料'''
+    if request.method == 'POST':
+        id = json.loads(request.body)['id']
+        Unit.objects.get(id=id).delete()
+        return HttpResponse('success')
+
+@csrf_exempt
+def getAttachment(request):
+    '''回傳附件資料'''
+    if request.method == 'GET':
+        attachments = Attachment.objects.all()
+        attachments = [{'id': attachment.id, 'name': attachment.name, 'remark': attachment.remark} for attachment in attachments]
+        return HttpResponse(json.dumps(attachments))
+
+
+@csrf_exempt
+def addAttachment(request):
+    '''新增附件資料'''
+    if request.method == 'POST':
+        addattachmentData = json.loads(request.body)['addattachmentData']
+        try:
+            newAttachmentID = Attachment.objects.latest('id').id + 1
+        except Exception as e:
+            newAttachmentID = 1
+        Attachment.objects.create(id=newAttachmentID, name=addattachmentData['name'], remark=addattachmentData['remark'])
+        return HttpResponse(newAttachmentID)
+
+@csrf_exempt
+def deleteAttachment(request):
+    '''刪除附件資料'''
+    if request.method == 'POST':
+        id = json.loads(request.body)['id']
+        Attachment.objects.get(id=id).delete()
+        return HttpResponse('success')
+
+@csrf_exempt
+def editAttachment(request):
+    '''編輯附件資料'''
+    if request.method == 'POST':
+        editattachmentData = json.loads(request.body)['editattachmentData']
+        attachment = Attachment.objects.get(id=editattachmentData['id'])
+        attachment.name = editattachmentData['name']
+        attachment.remark = editattachmentData['remark']
+        attachment.save()
+        return HttpResponse('success')

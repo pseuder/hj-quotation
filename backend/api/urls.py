@@ -16,4 +16,11 @@ urlpatterns = [
     path('addOther',views.addOther,name='addOther'),
     path('addUser',views.addUser,name='addUser'),
     path('addProduct',views.addProduct,name='addProduct'),
+    path('getUnit',views.getUnit,name='getUnit'),
+    path('addUnit',views.addUnit,name='addUnit'),
+    path('deleteUnit',views.deleteUnit,name='deleteUnit'),
+    path('getAttachment',views.getAttachment,name='getAttachment'),
+    path('addAttachment',views.addAttachment,name='addAttachment'),
+    path('deleteAttachment',views.deleteAttachment,name='deleteAttachment'),
+    path('editAttachment',views.editAttachment,name='editAttachment'),
 ]

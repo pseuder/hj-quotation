@@ -30,5 +30,28 @@ class Other(models.Model):
     class Meta:
         db_table = 'Other'
 
+
+    def __str__(self):
+        return self.id
+
+
+class Unit(models.Model):
+    id = models.IntegerField(primary_key=True, blank=True, null=False)
+    name = models.TextField(blank=True, null=False)
+    class Meta:
+        db_table = 'Unit'
+    
+    def __str__(self):
+        return self.id
+
+
+
+class Attachment(models.Model):
+    id = models.IntegerField(primary_key=True, blank=True, null=False)
+    name = models.TextField(blank=True, null=False)
+    remark = models.TextField(blank=True, null=False)
+    class Meta:
+        db_table = 'Attachment'
+    
     def __str__(self):
         return self.id

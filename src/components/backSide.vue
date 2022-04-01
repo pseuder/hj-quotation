@@ -98,6 +98,45 @@
                         <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="otherAdd" circle icon="el-icon-plus"></el-button>
                     </div>
                 </el-tab-pane>
+                <el-tab-pane label="單位" name="unit">
+                    <div class="tab-body">
+                        <el-table 
+                            :data="unitData" 
+                            style="width: 100%; height:93%; overflow: auto"
+                            v-loading="unitTableLoading"
+                            empty-text="尚無資料">
+                            <el-table-column label="名稱" prop="name">
+                            </el-table-column>
+                            <el-table-column label="操作" width="180">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="unitDelete(scope.$index, scope.row)">刪除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="unitAdd" circle icon="el-icon-plus"></el-button>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="附件" name="attachment">
+                    <div class="tab-body">
+                        <el-table 
+                            :data="attachmentData" 
+                            style="width: 100%; height:93%; overflow: auto"
+                            v-loading="attachmentTableLoading"
+                            empty-text="尚無資料">
+                            <el-table-column label="名稱" prop="name">
+                            </el-table-column>
+                            <el-table-column label="備註" prop="remark">
+                            </el-table-column>
+                            <el-table-column label="操作" width="180">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="attachmentEdit(scope.$index, scope.row)">編輯</el-button>
+                                    <el-button type="text" size="mini" @click="attachmentDelete(scope.$index, scope.row)">刪除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button style="position: absolute; right: 10px; bottom: 10px;" type="warning" @click="attachmentAdd" circle icon="el-icon-plus"></el-button>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
 
@@ -202,6 +241,48 @@
                 <el-button type="primary" @click="otherAddDialogSubmit">確 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="增加單位" :visible.sync="unitAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+            <el-form :model="addunitData"  label-width="80px">
+                <el-form-item label="單位" prop="name">
+                    <el-input v-model="addunitData.name" placeholder="請輸入單位"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="unitAddDialogVisible = false; showModal = false">取 消</el-button>
+                <el-button type="primary" @click="unitAddDialogSubmit">確 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="增加附件" :visible.sync="attachmentAddDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+            <el-form :model="addattachmentData"  label-width="80px">
+                <el-form-item label="附件名稱" prop="name">
+                    <el-input v-model="addattachmentData.name" placeholder="請輸入附件名稱"></el-input>
+                </el-form-item>
+                <el-form-item label="附件備註" prop="remark">
+                    <el-input v-model="addattachmentData.remark" placeholder="請輸入附件備註"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="attachmentAddDialogVisible = false; showModal = false">取 消</el-button>
+                <el-button type="primary" @click="attachmentAddDialogSubmit">確 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="修改附件" :visible.sync="attachmentDialogVisible" width="50%" :close-on-click-modal="false" :modal="false" :close-on-press-escape="false" :show-close="false">
+            <el-form :model="editattachmentData"  label-width="80px">
+                <el-form-item label="附件名稱" prop="name">
+                    <el-input v-model="editattachmentData.name" placeholder="請輸入附件名稱"></el-input>
+                </el-form-item>
+                <el-form-item label="附件備註" prop="remark">
+                    <el-input v-model="editattachmentData.remark" placeholder="請輸入附件備註"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="attachmentDialogVisible = false; showModal = false">取 消</el-button>
+                <el-button type="primary" @click="attachmentDialogSubmit">確 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 
 </template>
@@ -216,6 +297,8 @@ export default {
         userData: [],
         productData: [],
         otherData:[],
+        unitData:[],
+        attachmentData:[],
         userDialogVisible: false,
         edituserData:{
             id: '',
@@ -256,9 +339,27 @@ export default {
             name: '',
             unitPrice: '',
         },
+        unitAddDialogVisible: false,
+        addunitData:{
+            name: ''
+        },
+        addattachmentData:{
+            name: '',
+            remark: '',
+        },
+        editattachmentData:{
+            id: '',
+            name: '',
+            remark: '',
+            index:'',
+        },
         userTableLoading: false,
         productTableLoading: false,
         otherTableLoading: false,
+        unitTableLoading: false,
+        attachmentTableLoading: false,
+        
+        
     }
   },
   created(){
@@ -291,6 +392,20 @@ export default {
             this.axios.get('getOther').then(res => {
                 self.otherData = res.data;
                 self.otherTableLoading = false
+            })
+        }
+        else if(tab.label == '單位'){
+            self.unitTableLoading = true;
+            this.axios.get('getUnit').then(res => {
+                self.unitData = res.data;
+                self.unitTableLoading = false
+            })
+        }
+        else if(tab.label == '附件'){
+            self.attachmentTableLoading = true;
+            this.axios.get('getAttachment').then(res => {
+                self.attachmentData = res.data;
+                self.attachmentTableLoading = false
             })
         }
     },
@@ -399,7 +514,6 @@ export default {
         this.axios.post("/addOther",{
             addotherData : this.addotherData
         }).then(res => {
-            console.log(res.data)
             self.otherData.push({
                 id: res.data,
                 name: self.addotherData.name,
@@ -424,7 +538,6 @@ export default {
         this.axios.post("/addUser",{
             adduserData : this.adduserData
         }).then(res => {
-            console.log(res.data)
             self.userData.push({
                 id: res.data,
                 account: self.adduserData.account,
@@ -450,7 +563,6 @@ export default {
         this.axios.post("/addProduct",{
             addproductData : this.addproductData
         }).then(res => {
-            console.log(res.data)
             self.productData.push({
                 id: res.data,
                 brand: self.addproductData.brand,
@@ -464,6 +576,79 @@ export default {
             self.addproductData.unitPrice = ''
             self.productAddDialogVisible = false;
             self.showModal = false
+        })
+    },
+    unitDelete(index, row){
+        let self = this
+        this.axios.post("/deleteUnit",{
+            id : row.id
+        }).then(res => {
+            self.unitData.splice(index, 1)
+        })
+    },
+    unitAdd(){
+        this.unitAddDialogVisible = true
+        this.showModal = true
+    },
+    unitAddDialogSubmit(){
+        let self = this
+        this.axios.post("/addUnit",{
+            addunitData : this.addunitData
+        }).then(res => {
+            self.unitData.push({
+                id: res.data,
+                name: self.addunitData.name,
+            })
+            self.addunitData.name = ''
+            self.unitAddDialogVisible = false;
+            self.showModal = false
+        })
+    },
+    attachmentEdit(index, row){
+        this.editattachmentData.id = row.id;
+        this.editattachmentData.name = row.name
+        this.editattachmentData.remark = row.remark
+        this.editattachmentData.index = index;
+        this.attachmentDialogVisible = true
+        this.showModal = true
+    },
+    attachmentDelete(index, row){
+        let self = this
+        this.axios.post("/deleteAttachment",{
+            id : row.id
+        }).then(res => {
+            self.attachmentData.splice(index, 1)
+        })
+    },
+    attachmentAdd(){
+        this.attachmentAddDialogVisible = true
+        this.showModal = true
+    },
+    attachmentAddDialogSubmit(){
+        let self = this
+        this.axios.post("/addAttachment",{
+            addattachmentData : this.addattachmentData
+        }).then(res => {
+            self.attachmentData.push({
+                id: res.data,
+                name: self.addattachmentData.name,
+                remark: self.addattachmentData.remark,
+            })
+            self.addattachmentData.name = ''
+            self.addattachmentData.remark = ''
+            self.attachmentAddDialogVisible = false;
+            self.showModal = false
+        })
+    },
+    attachmentDialogSubmit(){
+        let self = this
+        this.axios.post("/editAttachment",{
+            editattachmentData : this.editattachmentData
+        }).then(res => {
+            self.attachmentDialogVisible = false;
+            self.showModal = false
+            self.attachmentData[self.editattachmentData.index].name = self.editattachmentData.name
+            self.attachmentData[self.editattachmentData.index].remark = self.editattachmentData.remark
         })
     },
     goMain(){
