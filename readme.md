@@ -5,9 +5,6 @@
 - python 環境  
   ` $ pip install -r requirements.txt`
 
-- node_modules  
-  `$ npm install `
-
 - 建立資料庫  
   `$ python manage.py migrate`
 
@@ -36,3 +33,31 @@
 - 手繪版簽名: vue-esign
 - 後端: Django, Python
 - 資料庫: sqlite
+
+## 開發
+
+- node_modules  
+  `$ npm install `
+
+## 部屬pythonanywhere
+
+- File:  
+  將整包專案置於使用者目錄底下  
+  home/username/hj-quotation
+
+
+- Console:  
+  ` $ pip install -r requirements.txt`
+
+  `$ python manage.py migrate`
+
+  `$ python write_model_from_csv.py`
+
+- Web  
+  - 根據實際使用者名稱與專案名稱修改wsgi.py後貼到`WSGI configuration file`中
+
+  - 設置Static files:
+    URL: /static/
+    Directory: /home/apex890520/hj-quotation/dist/static
+
+  - 點擊Reload
