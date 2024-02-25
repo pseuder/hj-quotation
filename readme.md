@@ -11,9 +11,13 @@
 - 建立資料庫  
   `$ python manage.py migrate`
 
+- 將csv中的資料寫入剛建好的資料庫  
+  `$ python write_model_from_csv.py`
+
 ## 執行
 
-`$ python manage.py runserver`
+  `$ python manage.py runserver`  
+  預設登入帳密為admin/admin
 
 ## 操作
 
